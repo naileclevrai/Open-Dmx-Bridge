@@ -60,7 +60,9 @@ public sealed class BridgeOrchestrator : IBridgeOrchestrator
             OutOfOrderPackets = monitor.OutOfOrderPackets,
             LastPacketMs = monitor.LastPacketMs,
             ArtNetTimedOut = monitor.IsTimedOut,
-            LastArtNetPacket = DateTimeOffset.Now.AddMilliseconds(-monitor.LastPacketMs),
+            LastArtNetPacket = monitor.LastPacketMs < 0
+                ? DateTimeOffset.MinValue
+                : DateTimeOffset.Now.AddMilliseconds(-monitor.LastPacketMs),
             OutputDescription = output?.DeviceDescription,
             LastSource = monitor.Source,
             ActiveUniverse = monitor.Universe

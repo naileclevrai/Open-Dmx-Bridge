@@ -93,7 +93,7 @@ public partial class MainViewModel : ObservableObject, IDisposable
     [ObservableProperty] private long _invalidPackets;
     [ObservableProperty] private long _lostSequences;
     [ObservableProperty] private long _outOfOrderPackets;
-    [ObservableProperty] private double _lastPacketMs;
+    [ObservableProperty] private string _lastPacketDisplay = "—";
     [ObservableProperty] private string _outputInfo = "Non connecté";
     [ObservableProperty] private string _statusText = "Arrêté";
     [ObservableProperty] private string _monitorSource = "—";
@@ -319,7 +319,7 @@ public partial class MainViewModel : ObservableObject, IDisposable
         InvalidPackets = stats.InvalidPackets;
         LostSequences = stats.LostSequences;
         OutOfOrderPackets = stats.OutOfOrderPackets;
-        LastPacketMs = stats.LastPacketMs;
+        LastPacketDisplay = monitor.LastPacketMs < 0 ? "—" : $"{monitor.LastPacketMs:F0} ms";
         MonitorSource = monitor.Source;
 
         if (IsBridgeRunning)
@@ -330,7 +330,7 @@ public partial class MainViewModel : ObservableObject, IDisposable
                          $"FPS DMX : {monitor.DmxFps:F1}\n" +
                          $"Source : {monitor.Source}\n" +
                          $"Paquets : {monitor.PacketsReceived:N0}\n" +
-                         $"Dernier paquet : {(double.IsPositiveInfinity(monitor.LastPacketMs) ? "—" : $"{monitor.LastPacketMs:F0} ms")}";
+                         $"Dernier paquet : {(monitor.LastPacketMs < 0 ? "—" : $"{monitor.LastPacketMs:F0} ms")}";
     }
 
     private void OnLogEntryAdded(object? sender, LogEntry entry)

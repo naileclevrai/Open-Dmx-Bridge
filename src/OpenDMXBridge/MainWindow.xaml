@@ -180,7 +180,7 @@
                         </StackPanel>
                         <StackPanel Grid.Row="0" Grid.Column="3" Margin="0,0,8,8">
                             <TextBlock Text="Dernier paquet" FontSize="11" Foreground="#666"/>
-                            <TextBlock Text="{Binding LastPacketMs, StringFormat={}{0:F0} ms}" FontSize="15" FontWeight="SemiBold"/>
+                            <TextBlock Text="{Binding LastPacketDisplay}" FontSize="15" FontWeight="SemiBold"/>
                         </StackPanel>
                         <StackPanel Grid.Row="0" Grid.Column="4" Margin="0,0,0,8">
                             <TextBlock Text="Source" FontSize="11" Foreground="#666"/>

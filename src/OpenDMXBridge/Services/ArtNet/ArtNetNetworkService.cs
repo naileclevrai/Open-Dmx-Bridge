@@ -70,7 +70,7 @@ public sealed class ArtNetNetworkService : INetworkService, IAsyncDisposable
     {
         var now = Stopwatch.GetTimestamp();
         var lastMs = _lastPacketTimestamp == 0
-            ? double.PositiveInfinity
+            ? -1.0
             : (now - _lastPacketTimestamp) * 1000.0 / Stopwatch.Frequency;
 
         UniverseId target;
@@ -85,7 +85,7 @@ public sealed class ArtNetNetworkService : INetworkService, IAsyncDisposable
             Source = _lastSource,
             PacketsReceived = PacketsReceived,
             LastPacketMs = lastMs,
-            IsTimedOut = lastMs > TimeoutSeconds * 1000.0,
+            IsTimedOut = _lastPacketTimestamp != 0 && lastMs > TimeoutSeconds * 1000.0,
             LostSequences = LostSequences,
             OutOfOrderPackets = OutOfOrderPackets,
             InvalidPackets = InvalidPackets

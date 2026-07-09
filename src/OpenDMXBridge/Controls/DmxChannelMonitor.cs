@@ -72,7 +72,11 @@ public class DmxChannelMonitor : UserControl
         {
             Interval = TimeSpan.FromMilliseconds(100)
         };
-        _timer.Tick += (_, _) => Refresh();
+        _timer.Tick += (_, _) =>
+        {
+            try { Refresh(); }
+            catch { /* ignore render glitches */ }
+        };
         _timer.Start();
         Refresh();
     }

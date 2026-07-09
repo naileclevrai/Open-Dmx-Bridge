@@ -86,6 +86,7 @@ L'indicateur Art-Net passe au vert lorsque des paquets sont reçus (dernières 2
 - Enregistrement / lecture, moniteur Art-Net
 - Mapping univers, API locale
 
-## Licence
+## License
 
-Projet open source — voir le dépôt GitHub.
+This project is licensed under the Apache License 2.0.
+See the LICENSE file for details.

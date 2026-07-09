@@ -13,13 +13,31 @@ Remplaçant moderne d'ArtNetToDMX : conversion **Art-Net** (UDP 6454) vers sorti
 ```
 UI (WPF / MVVM)
  │
- ├── Settings Service      — persistance JSON (%LocalAppData%/OpenDMXBridge)
- ├── Network Service       — réception Art-Net UDP 6454
- ├── DMX Engine            — buffer 512 canaux, boucle ~44 Hz
- ├── FTDI Output Service   — OpenDMX via FTD2XX.dll
- ├── Logging Service       — journal thread-safe
- └── Bridge Orchestrator   — coordination démarrage / arrêt
+ ├── Settings Service
+ ├── Network Service (Art-Net UDP 6454)
+ ├── DMX Engine (ConcurrentDictionary<UniverseId, UniverseBuffer>)
+ ├── IDmxOutput (plugins)
+ │    ├── OpenDMXOutput (FTD2XX, timings DMX512)
+ │    ├── NullOutput (mode Monitor)
+ │    ├── EnttecProOutput / DMXKingOutput / sACN / ArtNet (stubs)
+ ├── Logging Service (TRACE…ERROR + export .log)
+ └── Bridge Orchestrator
 ```
+
+### Fiabilité
+
+- **Double buffer atomique** (`Interlocked.Exchange`) entre thread réseau et moteur DMX
+- **Horloge précise** Stopwatch avec correction de dérive (~44 Hz)
+- **Timings OpenDMX** : break 100 µs, MAB 12 µs, start code + 512 slots
+- **Reconnexion USB** automatique sans fermeture de l'application
+- **Zéro allocation** dans les boucles réseau et DMX (buffer pré-alloué, pas de LINQ)
+
+### Monitoring
+
+- FPS Art-Net et DMX
+- Délai depuis dernier paquet (timeout > 2 s → LED rouge)
+- Séquences perdues et paquets hors ordre
+- Mode **Monitor** : analyse sans sortie physique
 
 ## Fonctionnalités MVP
 

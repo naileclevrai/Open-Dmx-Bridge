@@ -7,12 +7,23 @@ public sealed class LogLevelToBrushConverter : IValueConverter
 {
     public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        var color = value?.ToString() switch
+        var key = value switch
+        {
+            Services.Contracts.LogLevel.Trace => "Trace",
+            Services.Contracts.LogLevel.Debug => "Debug",
+            Services.Contracts.LogLevel.Info => "Info",
+            Services.Contracts.LogLevel.Warning => "Warning",
+            Services.Contracts.LogLevel.Error => "Error",
+            _ => value?.ToString() ?? ""
+        };
+
+        var color = key switch
         {
             "Error" => "#E04B4B",
-            "Warning" => "#E8A838",
+            "Warning" or "WARN" => "#E8A838",
             "Info" => "#8AB4F8",
             "Debug" => "#6B7280",
+            "Trace" => "#4B5563",
             _ => "#C8CCD4"
         };
 

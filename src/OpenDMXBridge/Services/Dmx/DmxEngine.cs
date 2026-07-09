@@ -1,22 +1,22 @@
+using System.Collections.Concurrent;
+using System.Diagnostics;
+using OpenDMXBridge.Models;
 using OpenDMXBridge.Services.Contracts;
+using OpenDMXBridge.Services.Dmx;
 
 namespace OpenDMXBridge.Services.Dmx;
 
 /// <summary>
-/// Moteur DMX thread-safe avec double buffer et boucle dédiée (~44 Hz).
-/// Aucune allocation dans la boucle de sortie.
+/// Moteur DMX : multi-univers, double buffer atomique, horloge précise, zéro allocation en boucle.
 /// </summary>
 public sealed class DmxEngine : IDmxEngine
 {
-    public const int ChannelCount = 512;
-
-    private readonly IFtdiOutputService _ftdi;
     private readonly ILoggingService _logger;
+    private readonly ConcurrentDictionary<UniverseId, UniverseBuffer> _universes = new();
+    private readonly byte[] _outputFrame = new byte[UniverseBuffer.SlotCount];
+    private readonly PrecisePeriodicLoop _clock = new(44);
 
-    private readonly byte[] _writeBuffer = new byte[ChannelCount];
-    private readonly byte[] _readBuffer = new byte[ChannelCount];
-    private readonly object _bufferLock = new();
-
+    private volatile IDmxOutput? _output;
     private CancellationTokenSource? _cts;
     private Thread? _outputThread;
     private volatile bool _isRunning;
@@ -25,12 +25,13 @@ public sealed class DmxEngine : IDmxEngine
     private long _framesSent;
     private double _currentFps;
     private long _fpsCounter;
-    private DateTime _fpsWindowStart = DateTime.UtcNow;
+    private long _fpsWindowStartTimestamp;
+    private UniverseId _activeUniverse;
 
-    public DmxEngine(IFtdiOutputService ftdi, ILoggingService logger)
+    public DmxEngine(ILoggingService logger)
     {
-        _ftdi = ftdi;
         _logger = logger;
+        _fpsWindowStartTimestamp = Stopwatch.GetTimestamp();
     }
 
     public bool IsRunning => _isRunning;
@@ -38,32 +39,40 @@ public sealed class DmxEngine : IDmxEngine
     public int RefreshHz
     {
         get => _refreshHz;
-        set => _refreshHz = Math.Clamp(value, 1, 60);
+        set
+        {
+            _refreshHz = Math.Clamp(value, 1, 60);
+            _clock.SetFrequency(_refreshHz);
+            _clock.Reset();
+        }
     }
 
     public long FramesSent => Interlocked.Read(ref _framesSent);
     public double CurrentFps => _currentFps;
 
-    public ReadOnlySpan<byte> GetChannelSnapshot()
+    public UniverseId ActiveUniverse
     {
-        lock (_bufferLock)
-        {
-            _writeBuffer.AsSpan().CopyTo(_readBuffer);
-            return _readBuffer;
-        }
+        get => _activeUniverse;
+        set => _activeUniverse = value;
     }
 
-    public void ApplyArtNetData(ReadOnlySpan<byte> data, int length, int startChannel = 1)
+    public void SetOutput(IDmxOutput output) => _output = output;
+
+    public void CopyActiveUniverseSnapshot(Span<byte> destination)
     {
-        if (length <= 0)
+        if (_universes.TryGetValue(_activeUniverse, out var buffer))
+            buffer.CopySnapshot(destination);
+        else
+            destination.Clear();
+    }
+
+    public void ApplyArtNetPatch(UniverseId universe, ReadOnlySpan<byte> data, int startChannel = 1)
+    {
+        if (data.Length == 0)
             return;
 
-        lock (_bufferLock)
-        {
-            var startIndex = Math.Clamp(startChannel - 1, 0, ChannelCount - 1);
-            var maxCopy = Math.Min(length, ChannelCount - startIndex);
-            data.Slice(0, maxCopy).CopyTo(_writeBuffer.AsSpan(startIndex));
-        }
+        var buffer = _universes.GetOrAdd(universe, static _ => new UniverseBuffer());
+        buffer.ApplyPatch(data, startChannel);
     }
 
     public Task StartAsync(CancellationToken cancellationToken = default)
@@ -73,8 +82,10 @@ public sealed class DmxEngine : IDmxEngine
 
         _cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
         _isRunning = true;
-        _fpsWindowStart = DateTime.UtcNow;
         _fpsCounter = 0;
+        _fpsWindowStartTimestamp = Stopwatch.GetTimestamp();
+        _clock.SetFrequency(RefreshHz);
+        _clock.Reset();
 
         _outputThread = new Thread(OutputLoop)
         {
@@ -97,9 +108,7 @@ public sealed class DmxEngine : IDmxEngine
         _cts?.Cancel();
 
         if (_outputThread is not null && _outputThread.IsAlive)
-        {
             _outputThread.Join(TimeSpan.FromSeconds(2));
-        }
 
         _cts?.Dispose();
         _cts = null;
@@ -112,44 +121,37 @@ public sealed class DmxEngine : IDmxEngine
     private void OutputLoop(object? state)
     {
         var token = state is CancellationToken ct ? ct : CancellationToken.None;
-        var localFrame = new byte[ChannelCount];
+        _clock.Start();
 
         while (_isRunning && !token.IsCancellationRequested)
         {
-            var frameStart = DateTime.UtcNow;
-
-            lock (_bufferLock)
+            var output = _output;
+            if (output is not null && output.IsConnected)
             {
-                _writeBuffer.AsSpan().CopyTo(localFrame);
-            }
+                if (_universes.TryGetValue(_activeUniverse, out var buffer))
+                    buffer.CopySnapshot(_outputFrame);
+                else
+                    _outputFrame.AsSpan().Clear();
 
-            if (_ftdi.IsConnected)
-            {
-                _ftdi.SendFrame(localFrame);
+                output.SendFrame(_outputFrame);
                 Interlocked.Increment(ref _framesSent);
                 Interlocked.Increment(ref _fpsCounter);
             }
 
             UpdateFps();
-
-            var targetMs = 1000.0 / RefreshHz;
-            var elapsedMs = (DateTime.UtcNow - frameStart).TotalMilliseconds;
-            var sleepMs = (int)Math.Max(0, targetMs - elapsedMs);
-
-            if (sleepMs > 0)
-                Thread.Sleep(sleepMs);
+            _clock.WaitForNextTick();
         }
     }
 
     private void UpdateFps()
     {
-        var now = DateTime.UtcNow;
-        var elapsed = (now - _fpsWindowStart).TotalSeconds;
+        var now = Stopwatch.GetTimestamp();
+        var elapsed = (now - _fpsWindowStartTimestamp) / (double)Stopwatch.Frequency;
         if (elapsed < 1.0)
             return;
 
         _currentFps = Interlocked.Exchange(ref _fpsCounter, 0) / elapsed;
-        _fpsWindowStart = now;
+        _fpsWindowStartTimestamp = now;
     }
 
     public async ValueTask DisposeAsync()

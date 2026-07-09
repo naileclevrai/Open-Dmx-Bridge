@@ -82,8 +82,7 @@ public class DmxChannelMonitor : Canvas
         if (DmxEngine is null)
             return;
 
-        var snapshot = DmxEngine.GetChannelSnapshot();
-        snapshot.CopyTo(_levels);
+        DmxEngine.CopyActiveUniverseSnapshot(_levels);
         LayoutBars();
     }
 

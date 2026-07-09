@@ -4,7 +4,7 @@ using OpenDMXBridge.Services;
 using OpenDMXBridge.Services.ArtNet;
 using OpenDMXBridge.Services.Contracts;
 using OpenDMXBridge.Services.Dmx;
-using OpenDMXBridge.Services.Ftdi;
+using OpenDMXBridge.Services.Outputs;
 using OpenDMXBridge.ViewModels;
 
 namespace OpenDMXBridge;
@@ -38,7 +38,15 @@ public partial class App : Application
     {
         services.AddSingleton<ILoggingService, LoggingService>();
         services.AddSingleton<ISettingsService, SettingsService>();
-        services.AddSingleton<IFtdiOutputService, FtdiOutputService>();
+
+        services.AddSingleton<OpenDmxOutput>();
+        services.AddSingleton<NullDmxOutput>();
+        services.AddSingleton<EnttecProOutput>();
+        services.AddSingleton<DmxKingOutput>();
+        services.AddSingleton<SacnOutput>();
+        services.AddSingleton<ArtNetOutput>();
+        services.AddSingleton<IDmxOutputFactory, DmxOutputFactory>();
+
         services.AddSingleton<IDmxEngine, DmxEngine>();
         services.AddSingleton<INetworkService, ArtNetNetworkService>();
         services.AddSingleton<IBridgeOrchestrator, BridgeOrchestrator>();

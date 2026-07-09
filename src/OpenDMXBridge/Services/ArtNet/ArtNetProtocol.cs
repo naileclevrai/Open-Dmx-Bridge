@@ -8,6 +8,7 @@ internal static class ArtNetProtocol
     public const int Port = 6454;
     public const int MinPacketSize = 18;
     public const int MaxDmxSlots = 512;
+    public const int SequenceOffset = 12;
 
     private static ReadOnlySpan<byte> ArtNetId => "Art-Net\0"u8;
 
@@ -15,13 +16,14 @@ internal static class ArtNetProtocol
 
     public static bool TryParseArtDmx(
         ReadOnlySpan<byte> buffer,
+        out byte sequence,
         out byte net,
         out byte subnet,
         out byte universe,
         out ReadOnlySpan<byte> dmxData,
         out int dataLength)
     {
-        net = subnet = universe = 0;
+        sequence = net = subnet = universe = 0;
         dmxData = ReadOnlySpan<byte>.Empty;
         dataLength = 0;
 
@@ -39,6 +41,7 @@ internal static class ArtNetProtocol
         if (protVer < 14)
             return false;
 
+        sequence = buffer[SequenceOffset];
         universe = (byte)(buffer[14] & 0x0F);
         subnet = (byte)((buffer[14] >> 4) & 0x0F);
         net = (byte)(buffer[15] & 0x7F);

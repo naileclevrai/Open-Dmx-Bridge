@@ -3,13 +3,14 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="clr-namespace:OpenDMXBridge.Controls"
         xmlns:conv="clr-namespace:OpenDMXBridge.Converters"
-        xmlns:models="clr-namespace:OpenDMXBridge.Models"
-        xmlns:contracts="clr-namespace:OpenDMXBridge.Services.Contracts"
         Title="OpenDMX Bridge"
-        Height="860"
-        Width="1240"
-        MinHeight="680"
-        MinWidth="1000"
+        Height="780"
+        Width="1100"
+        MinHeight="600"
+        MinWidth="900"
+        FontFamily="Segoe UI"
+        FontSize="12"
+        Background="#F5F5F5"
         WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <conv:BoolToStatusBrushConverter x:Key="StatusBrushConverter"/>
@@ -19,39 +20,28 @@
         <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
     </Window.Resources>
 
-    <Grid Margin="12">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="220"/>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="340"/>
-            <ColumnDefinition Width="12"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
-
-        <Border Grid.Row="0" Grid.ColumnSpan="3"
-                Background="#3A2A14"
-                BorderBrush="#8A6020"
+    <DockPanel Margin="10">
+        <!-- Alerte FTDI -->
+        <Border DockPanel.Dock="Top"
+                Background="{StaticResource WarnBgBrush}"
+                BorderBrush="{StaticResource WarnBorderBrush}"
                 BorderThickness="1"
                 CornerRadius="4"
-                Padding="12,8"
-                Margin="0,0,0,10"
+                Padding="10,8"
+                Margin="0,0,0,8"
                 Visibility="{Binding ShowFtdiWarning, Converter={StaticResource BoolToVisibilityConverter}}">
-            <TextBlock Text="{Binding FtdiDriverMessage}" TextWrapping="Wrap" Foreground="#F0C060"/>
+            <TextBlock Text="{Binding FtdiDriverMessage}"
+                       TextWrapping="Wrap"
+                       Foreground="{StaticResource WarnTextBrush}"/>
         </Border>
 
-        <Border Grid.Row="1" Grid.ColumnSpan="3"
-                Background="{StaticResource PanelBrush}"
-                BorderBrush="{StaticResource BorderBrush}"
-                BorderThickness="1" CornerRadius="4" Padding="14,10" Margin="0,0,0,10">
-            <DockPanel LastChildFill="False">
+        <!-- Barre titre -->
+        <Border DockPanel.Dock="Top" Background="White" BorderBrush="#D0D0D0" BorderThickness="1"
+                CornerRadius="4" Padding="12,10" Margin="0,0,0,8">
+            <DockPanel>
                 <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" VerticalAlignment="Center">
-                    <TextBlock Text="OpenDMX Bridge" FontSize="18" FontWeight="SemiBold" Margin="0,0,16,0"/>
-                    <TextBlock Text="{Binding StatusText}" Foreground="{StaticResource MutedBrush}" VerticalAlignment="Center"/>
+                    <TextBlock Text="OpenDMX Bridge" FontSize="16" FontWeight="SemiBold"/>
+                    <TextBlock Text="{Binding StatusText}" Margin="12,0,0,0" Foreground="#666" VerticalAlignment="Center"/>
                 </StackPanel>
                 <Button DockPanel.Dock="Right" Style="{StaticResource PrimaryButton}"
                         Command="{Binding ToggleBridgeCommand}"
@@ -59,155 +49,22 @@
             </DockPanel>
         </Border>
 
-        <StackPanel Grid.Row="3" Grid.Column="0" Grid.RowSpan="2">
-            <Border Background="{StaticResource PanelBrush}" BorderBrush="{StaticResource BorderBrush}"
-                    BorderThickness="1" CornerRadius="4" Padding="12" Margin="0,0,0,10">
-                <StackPanel>
-                    <TextBlock Text="Mode" FontWeight="SemiBold" Margin="0,0,0,8"/>
-                    <ComboBox SelectedItem="{Binding OperationMode}" Margin="0,0,0,8">
-                        <models:BridgeOperationMode>Bridge</models:BridgeOperationMode>
-                        <models:BridgeOperationMode>Monitor</models:BridgeOperationMode>
-                    </ComboBox>
-                    <TextBlock Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap" FontSize="11"
-                               Text="Monitor : analyse réseau sans sortie DMX physique."/>
-                </StackPanel>
-            </Border>
-
-            <Border Background="{StaticResource PanelBrush}" BorderBrush="{StaticResource BorderBrush}"
-                    BorderThickness="1" CornerRadius="4" Padding="12" Margin="0,0,0,10">
-                <StackPanel>
-                    <TextBlock Text="Réseau" FontWeight="SemiBold" Margin="0,0,0,8"/>
-                    <Label Content="Carte réseau"/>
-                    <ComboBox ItemsSource="{Binding NetworkAdapters}" SelectedItem="{Binding SelectedAdapter}"
-                              DisplayMemberPath="Name" Margin="0,0,0,8"/>
-                    <Button Content="Actualiser" Command="{Binding RefreshAdaptersCommand}" Margin="0,0,0,12"/>
-                    <Label Content="Univers Art-Net (Net.SubNet.Universe)"/>
-                    <Grid Margin="0,0,0,8">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition/><ColumnDefinition Width="8"/>
-                            <ColumnDefinition/><ColumnDefinition Width="8"/>
-                            <ColumnDefinition/>
-                        </Grid.ColumnDefinitions>
-                        <TextBox Grid.Column="0" Text="{Binding ArtNetNet, UpdateSourceTrigger=PropertyChanged}"/>
-                        <TextBox Grid.Column="2" Text="{Binding ArtNetSubNet, UpdateSourceTrigger=PropertyChanged}"/>
-                        <TextBox Grid.Column="4" Text="{Binding ArtNetUniverse, UpdateSourceTrigger=PropertyChanged}"/>
-                    </Grid>
-                    <TextBlock Text="{Binding UniverseDisplay, StringFormat=Univers cible : {0}}"
-                               Foreground="{StaticResource MutedBrush}"/>
-                </StackPanel>
-            </Border>
-
-            <Border Background="{StaticResource PanelBrush}" BorderBrush="{StaticResource BorderBrush}"
-                    BorderThickness="1" CornerRadius="4" Padding="12" Margin="0,0,0,10"
-                    IsEnabled="{Binding IsBridgeMode}">
-                <StackPanel>
-                    <TextBlock Text="Sortie DMX" FontWeight="SemiBold" Margin="0,0,0,8"/>
-                    <Label Content="Type d'interface"/>
-                    <ComboBox ItemsSource="{Binding OutputTypes}" SelectedItem="{Binding SelectedOutputType}" Margin="0,0,0,8"/>
-                    <ComboBox ItemsSource="{Binding OutputDevices}" SelectedItem="{Binding SelectedOutputDevice}" Margin="0,0,0,8">
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Description}"/>
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>
-                    <Button Content="Détecter" Command="{Binding RefreshOutputDevicesCommand}" Margin="0,0,0,8"/>
-                    <TextBlock Text="{Binding OutputInfo}" TextWrapping="Wrap" Foreground="{StaticResource MutedBrush}"/>
-                </StackPanel>
-            </Border>
-
-            <Border Background="{StaticResource PanelBrush}" BorderBrush="{StaticResource BorderBrush}"
-                    BorderThickness="1" CornerRadius="4" Padding="12">
-                <StackPanel>
-                    <TextBlock Text="Mode analyse" FontWeight="SemiBold" Margin="0,0,0,8"/>
-                    <TextBlock Text="{Binding MonitorSummary}" FontFamily="Consolas" FontSize="11"
-                               Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap"/>
-                </StackPanel>
-            </Border>
-        </StackPanel>
-
-        <Border Grid.Row="2" Grid.Column="2" Background="{StaticResource PanelBrush}"
-                BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="4"
-                Padding="12,8" Margin="0,0,0,10">
-            <UniformGrid Rows="2" Columns="5">
-                <StackPanel Orientation="Horizontal" Margin="0,0,8,4">
-                    <Ellipse Width="10" Height="10" Margin="0,0,8,0"
-                             Fill="{Binding ArtNetActive, Converter={StaticResource StatusBrushConverter}}"/>
-                    <TextBlock Text="Art-Net" VerticalAlignment="Center"/>
-                </StackPanel>
-                <StackPanel Margin="0,0,8,4">
-                    <Label Content="FPS Art-Net"/>
-                    <TextBlock Text="{Binding ArtNetFps, StringFormat={}{0:F1}}" FontSize="15" FontWeight="SemiBold"/>
-                </StackPanel>
-                <StackPanel Margin="0,0,8,4">
-                    <Label Content="FPS DMX"/>
-                    <TextBlock Text="{Binding DmxFps, StringFormat={}{0:F1}}" FontSize="15" FontWeight="SemiBold"/>
-                </StackPanel>
-                <StackPanel Margin="0,0,8,4">
-                    <Label Content="Dernier paquet"/>
-                    <TextBlock Text="{Binding LastPacketMs, StringFormat={}{0:F0} ms}" FontSize="15" FontWeight="SemiBold"/>
-                </StackPanel>
-                <StackPanel Margin="0,0,8,4">
-                    <Label Content="Source"/>
-                    <TextBlock Text="{Binding MonitorSource}" FontSize="13" FontWeight="SemiBold"/>
-                </StackPanel>
-                <StackPanel Margin="0,0,8,0">
-                    <Label Content="Paquets reçus"/>
-                    <TextBlock Text="{Binding PacketsReceived, StringFormat=N0}" FontSize="15" FontWeight="SemiBold"/>
-                </StackPanel>
-                <StackPanel Margin="0,0,8,0">
-                    <Label Content="Paquets envoyés"/>
-                    <TextBlock Text="{Binding PacketsSent, StringFormat=N0}" FontSize="15" FontWeight="SemiBold"/>
-                </StackPanel>
-                <StackPanel Margin="0,0,8,0">
-                    <Label Content="Séq. perdues"/>
-                    <TextBlock Text="{Binding LostSequences}" FontSize="15" FontWeight="SemiBold"/>
-                </StackPanel>
-                <StackPanel Margin="0,0,8,0">
-                    <Label Content="Hors ordre"/>
-                    <TextBlock Text="{Binding OutOfOrderPackets}" FontSize="15" FontWeight="SemiBold"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" Margin="0,0,8,0">
-                    <Ellipse Width="10" Height="10" Margin="0,10,8,0"
-                             Fill="{Binding DmxOutputConnected, Converter={StaticResource StatusBrushConverter}}"/>
-                    <StackPanel>
-                        <Label Content="Sortie DMX"/>
-                        <TextBlock Text="{Binding DmxOutputConnected, Converter={StaticResource OutputStateConverter}}"
-                                   FontWeight="SemiBold"/>
-                    </StackPanel>
-                </StackPanel>
-            </UniformGrid>
-        </Border>
-
-        <Border Grid.Row="3" Grid.Column="2" Background="{StaticResource PanelBrush}"
-                BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="4" Padding="8">
-            <DockPanel>
-                <TextBlock DockPanel.Dock="Top" Text="Monitoring 512 canaux" FontWeight="SemiBold" Margin="4,4,4,8"/>
-                <controls:DmxChannelMonitor x:Name="ChannelMonitor"/>
-            </DockPanel>
-        </Border>
-
-        <Border Grid.Row="4" Grid.Column="2" Background="{StaticResource PanelBrush}"
-                BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="4"
-                Padding="8" Margin="0,10,0,0">
-            <DockPanel>
-                <DockPanel DockPanel.Dock="Top" Margin="4,4,4,8">
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <TextBlock Text="Journal" FontWeight="SemiBold" Margin="0,0,12,0"/>
-                        <ComboBox Width="100" SelectedItem="{Binding MinimumLogLevel}">
-                            <contracts:LogLevel>Trace</contracts:LogLevel>
-                            <contracts:LogLevel>Debug</contracts:LogLevel>
-                            <contracts:LogLevel>Info</contracts:LogLevel>
-                            <contracts:LogLevel>Warning</contracts:LogLevel>
-                            <contracts:LogLevel>Error</contracts:LogLevel>
-                        </ComboBox>
-                    </StackPanel>
+        <!-- Journal -->
+        <Border DockPanel.Dock="Bottom" Background="White" BorderBrush="#D0D0D0" BorderThickness="1"
+                CornerRadius="4" Height="180" Margin="0,8,0,0">
+            <DockPanel Margin="8">
+                <DockPanel DockPanel.Dock="Top" Margin="0,0,0,6">
+                    <TextBlock Text="Journal" FontWeight="SemiBold" VerticalAlignment="Center"/>
                     <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
-                        <Button Content="Exporter" Command="{Binding ExportLogsCommand}" Margin="0,0,8,0"/>
-                        <Button Content="Effacer" Command="{Binding ClearLogsCommand}"/>
+                        <ComboBox Width="110" Margin="0,0,8,0"
+                                  ItemsSource="{Binding LogLevelOptions}"
+                                  SelectedItem="{Binding SelectedLogLevel}"
+                                  DisplayMemberPath="Label"/>
+                        <Button Content="Exporter" Command="{Binding ExportLogsCommand}" Margin="0,0,6,0" Padding="10,4"/>
+                        <Button Content="Effacer" Command="{Binding ClearLogsCommand}" Padding="10,4"/>
                     </StackPanel>
                 </DockPanel>
-                <ListBox ItemsSource="{Binding LogEntries}" BorderThickness="0" Background="Transparent">
+                <ListBox ItemsSource="{Binding LogEntries}" BorderThickness="1" BorderBrush="#E0E0E0">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding}" FontFamily="Consolas" FontSize="11"
@@ -217,5 +74,153 @@
                 </ListBox>
             </DockPanel>
         </Border>
-    </Grid>
+
+        <!-- Corps -->
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="300" MinWidth="260"/>
+                <ColumnDefinition Width="8"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Panneau gauche -->
+            <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <GroupBox Header="Mode" Style="{StaticResource SectionGroup}">
+                        <StackPanel>
+                            <ComboBox ItemsSource="{Binding OperationModeOptions}"
+                                      SelectedItem="{Binding SelectedOperationMode}"
+                                      DisplayMemberPath="Label"/>
+                            <TextBlock Margin="0,6,0,0" Foreground="#666" FontSize="11" TextWrapping="Wrap"
+                                       Text="Monitor : analyse Art-Net sans sortie DMX."/>
+                        </StackPanel>
+                    </GroupBox>
+
+                    <GroupBox Header="Réseau" Style="{StaticResource SectionGroup}">
+                        <StackPanel>
+                            <TextBlock Text="Carte réseau" Margin="0,0,0,4" Foreground="#444"/>
+                            <ComboBox ItemsSource="{Binding NetworkAdapters}"
+                                      SelectedItem="{Binding SelectedAdapter}"
+                                      DisplayMemberPath="DisplayName"
+                                      Margin="0,0,0,6"/>
+                            <Button Content="Actualiser les cartes" Command="{Binding RefreshAdaptersCommand}"
+                                    HorizontalAlignment="Left" Padding="10,4" Margin="0,0,0,10"/>
+                            <TextBlock Text="Univers Art-Net (Net · SubNet · Universe)" Margin="0,0,0,4" Foreground="#444"/>
+                            <Grid Margin="0,0,0,6">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/><ColumnDefinition Width="6"/>
+                                    <ColumnDefinition/><ColumnDefinition Width="6"/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <TextBox Grid.Column="0" Text="{Binding ArtNetNet, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBox Grid.Column="2" Text="{Binding ArtNetSubNet, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBox Grid.Column="4" Text="{Binding ArtNetUniverse, UpdateSourceTrigger=PropertyChanged}"/>
+                            </Grid>
+                            <TextBlock Text="{Binding UniverseDisplay, StringFormat=Univers cible : {0}}" Foreground="#666"/>
+                        </StackPanel>
+                    </GroupBox>
+
+                    <GroupBox Header="Sortie DMX" Style="{StaticResource SectionGroup}"
+                              IsEnabled="{Binding IsBridgeMode}">
+                        <StackPanel>
+                            <TextBlock Text="Type d'interface" Margin="0,0,0,4" Foreground="#444"/>
+                            <ComboBox ItemsSource="{Binding OutputTypes}"
+                                      SelectedItem="{Binding SelectedOutputType}"
+                                      Margin="0,0,0,6"/>
+                            <ComboBox ItemsSource="{Binding OutputDevices}"
+                                      SelectedItem="{Binding SelectedOutputDevice}"
+                                      DisplayMemberPath="Description"
+                                      Margin="0,0,0,6"/>
+                            <Button Content="Détecter les interfaces" Command="{Binding RefreshOutputDevicesCommand}"
+                                    HorizontalAlignment="Left" Padding="10,4" Margin="0,0,0,6"/>
+                            <TextBlock Text="{Binding OutputInfo}" TextWrapping="Wrap" Foreground="#666"/>
+                        </StackPanel>
+                    </GroupBox>
+
+                    <GroupBox Header="Analyse" Style="{StaticResource SectionGroup}">
+                        <TextBlock Text="{Binding MonitorSummary}" FontFamily="Consolas" FontSize="11"
+                                   Foreground="#444" TextWrapping="Wrap"/>
+                    </GroupBox>
+                </StackPanel>
+            </ScrollViewer>
+
+            <GridSplitter Grid.Column="1" Width="8" HorizontalAlignment="Stretch" Background="Transparent"/>
+
+            <!-- Panneau droit -->
+            <Grid Grid.Column="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Border Grid.Row="0" Background="White" BorderBrush="#D0D0D0" BorderThickness="1"
+                        CornerRadius="4" Padding="10,8" Margin="0,0,0,8">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/><ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/><ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/><RowDefinition/>
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" Margin="0,0,8,8">
+                            <Ellipse Width="10" Height="10" Margin="0,0,6,0" VerticalAlignment="Center"
+                                     Fill="{Binding ArtNetActive, Converter={StaticResource StatusBrushConverter}}"/>
+                            <TextBlock Text="Art-Net" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="0" Grid.Column="1" Margin="0,0,8,8">
+                            <TextBlock Text="FPS Art-Net" FontSize="11" Foreground="#666"/>
+                            <TextBlock Text="{Binding ArtNetFps, StringFormat={}{0:F1}}" FontSize="15" FontWeight="SemiBold"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="0" Grid.Column="2" Margin="0,0,8,8">
+                            <TextBlock Text="FPS DMX" FontSize="11" Foreground="#666"/>
+                            <TextBlock Text="{Binding DmxFps, StringFormat={}{0:F1}}" FontSize="15" FontWeight="SemiBold"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="0" Grid.Column="3" Margin="0,0,8,8">
+                            <TextBlock Text="Dernier paquet" FontSize="11" Foreground="#666"/>
+                            <TextBlock Text="{Binding LastPacketMs, StringFormat={}{0:F0} ms}" FontSize="15" FontWeight="SemiBold"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="0" Grid.Column="4" Margin="0,0,0,8">
+                            <TextBlock Text="Source" FontSize="11" Foreground="#666"/>
+                            <TextBlock Text="{Binding MonitorSource}" FontSize="13" FontWeight="SemiBold"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,8,0">
+                            <TextBlock Text="Paquets reçus" FontSize="11" Foreground="#666"/>
+                            <TextBlock Text="{Binding PacketsReceived, StringFormat=N0}" FontWeight="SemiBold"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Grid.Column="1" Margin="0,0,8,0">
+                            <TextBlock Text="Paquets envoyés" FontSize="11" Foreground="#666"/>
+                            <TextBlock Text="{Binding PacketsSent, StringFormat=N0}" FontWeight="SemiBold"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Grid.Column="2" Margin="0,0,8,0">
+                            <TextBlock Text="Séq. perdues" FontSize="11" Foreground="#666"/>
+                            <TextBlock Text="{Binding LostSequences}" FontWeight="SemiBold"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Grid.Column="3" Margin="0,0,8,0">
+                            <TextBlock Text="Hors ordre" FontSize="11" Foreground="#666"/>
+                            <TextBlock Text="{Binding OutOfOrderPackets}" FontWeight="SemiBold"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Grid.Column="4" Orientation="Horizontal">
+                            <Ellipse Width="10" Height="10" Margin="0,4,6,0"
+                                     Fill="{Binding DmxOutputConnected, Converter={StaticResource StatusBrushConverter}}"/>
+                            <StackPanel>
+                                <TextBlock Text="Sortie DMX" FontSize="11" Foreground="#666"/>
+                                <TextBlock Text="{Binding DmxOutputConnected, Converter={StaticResource OutputStateConverter}}" FontWeight="SemiBold"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <Border Grid.Row="1" Background="White" BorderBrush="#D0D0D0" BorderThickness="1" CornerRadius="4" Padding="8">
+                    <DockPanel>
+                        <TextBlock DockPanel.Dock="Top" Text="512 canaux DMX" FontWeight="SemiBold" Margin="0,0,0,6"/>
+                        <controls:DmxChannelMonitor x:Name="ChannelMonitor" MinHeight="200"/>
+                    </DockPanel>
+                </Border>
+            </Grid>
+        </Grid>
+    </DockPanel>
 </Window>

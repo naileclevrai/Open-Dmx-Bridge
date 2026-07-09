@@ -71,12 +71,7 @@ public sealed class OpenDmxOutput : IDmxOutput
         FtdiNative.EnsureProbed();
 
         if (!FtdiNative.IsAvailable())
-        {
-            var reason = FtdiNative.UnavailableReason
-                         ?? "FTD2XX.dll indisponible — sortie OpenDMX désactivée.";
-            _logger.Warning(reason, nameof(OpenDmxOutput));
             return Array.Empty<DmxOutputDevice>();
-        }
 
         uint count = 0;
         if (FtdiNative.FT_CreateDeviceInfoList(ref count) != 0 || count == 0)

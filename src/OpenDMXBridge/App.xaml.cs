@@ -24,13 +24,26 @@ public partial class App : Application
         _serviceProvider = services.BuildServiceProvider();
         Services = _serviceProvider;
 
+        var logger = Services.GetRequiredService<ILoggingService>();
+
+        DispatcherUnhandledException += (_, args) =>
+        {
+            logger.Error($"Erreur UI : {args.Exception.Message}", nameof(App));
+            args.Handled = true;
+        };
+
+        AppDomain.CurrentDomain.UnhandledException += (_, args) =>
+        {
+            if (args.ExceptionObject is Exception ex)
+                logger.Error($"Erreur fatale : {ex.Message}", nameof(App));
+        };
+
         var settings = Services.GetRequiredService<ISettingsService>();
         settings.Load();
 
         var ftdiStatus = Services.GetRequiredService<IFtdiDriverStatus>();
         ftdiStatus.Probe();
 
-        var logger = Services.GetRequiredService<ILoggingService>();
         if (!ftdiStatus.IsAvailable)
             logger.Warning(ftdiStatus.UnavailableMessage ?? "Sortie OpenDMX indisponible.", nameof(App));
 

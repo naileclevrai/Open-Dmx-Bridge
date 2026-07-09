@@ -42,18 +42,35 @@ public partial class MainViewModel : ObservableObject, IDisposable
         OutputTypes = new ObservableCollection<string>(_outputFactory.AvailableOutputTypes);
         OutputDevices = new ObservableCollection<DmxOutputDevice>();
 
+        OperationModeOptions =
+        [
+            new LabeledOption<BridgeOperationMode>(BridgeOperationMode.Bridge, "Bridge — Art-Net vers DMX"),
+            new LabeledOption<BridgeOperationMode>(BridgeOperationMode.Monitor, "Monitor — analyse réseau")
+        ];
+        SelectedOperationMode = OperationModeOptions[0];
+
+        LogLevelOptions =
+        [
+            new LabeledOption<LogLevel>(LogLevel.Trace, "Trace"),
+            new LabeledOption<LogLevel>(LogLevel.Debug, "Debug"),
+            new LabeledOption<LogLevel>(LogLevel.Info, "Info"),
+            new LabeledOption<LogLevel>(LogLevel.Warning, "Warn"),
+            new LabeledOption<LogLevel>(LogLevel.Error, "Error")
+        ];
+        SelectedLogLevel = LogLevelOptions[3];
+
         _logger.EntryAdded += OnLogEntryAdded;
 
         _uiTimer = new DispatcherTimer(DispatcherPriority.Background)
         {
-            Interval = TimeSpan.FromMilliseconds(66)
+            Interval = TimeSpan.FromMilliseconds(250)
         };
         _uiTimer.Tick += OnUiTimerTick;
         _uiTimer.Start();
 
+        LoadFromSettings();
         RefreshAdapters();
         RefreshOutputDevices();
-        LoadFromSettings();
         UpdateFtdiDriverStatus();
     }
 
@@ -61,7 +78,11 @@ public partial class MainViewModel : ObservableObject, IDisposable
     public ObservableCollection<NetworkAdapterInfo> NetworkAdapters { get; }
     public ObservableCollection<string> OutputTypes { get; }
     public ObservableCollection<DmxOutputDevice> OutputDevices { get; }
+    public ObservableCollection<LabeledOption<BridgeOperationMode>> OperationModeOptions { get; }
+    public ObservableCollection<LabeledOption<LogLevel>> LogLevelOptions { get; }
 
+    [ObservableProperty] private LabeledOption<BridgeOperationMode>? _selectedOperationMode;
+    [ObservableProperty] private LabeledOption<LogLevel>? _selectedLogLevel;
     [ObservableProperty] private bool _isBridgeRunning;
     [ObservableProperty] private bool _artNetActive;
     [ObservableProperty] private bool _dmxOutputConnected;
@@ -80,48 +101,45 @@ public partial class MainViewModel : ObservableObject, IDisposable
     [ObservableProperty] private NetworkAdapterInfo? _selectedAdapter;
     [ObservableProperty] private DmxOutputDevice? _selectedOutputDevice;
     [ObservableProperty] private string _selectedOutputType = "OpenDMX";
-    [ObservableProperty] private BridgeOperationMode _operationMode = BridgeOperationMode.Bridge;
     [ObservableProperty] private int _artNetNet;
     [ObservableProperty] private int _artNetSubNet;
     [ObservableProperty] private int _artNetUniverse;
     [ObservableProperty] private string _universeDisplay = "0.0.0";
-    [ObservableProperty] private LogLevel _minimumLogLevel = LogLevel.Info;
     [ObservableProperty] private bool _ftdiDriverAvailable = true;
     [ObservableProperty] private string? _ftdiDriverMessage;
     [ObservableProperty] private bool _showFtdiWarning;
 
+    public BridgeOperationMode OperationMode => SelectedOperationMode?.Value ?? BridgeOperationMode.Bridge;
     public bool IsOpenDmxSelected => string.Equals(SelectedOutputType, "OpenDMX", StringComparison.OrdinalIgnoreCase);
-    public bool CanUseOpenDmxBridge => !IsOpenDmxSelected || FtdiDriverAvailable;
+    public bool IsBridgeMode => OperationMode == BridgeOperationMode.Bridge;
+    public bool IsMonitorMode => OperationMode == BridgeOperationMode.Monitor;
+
+    partial void OnSelectedOperationModeChanged(LabeledOption<BridgeOperationMode>? value)
+    {
+        OnPropertyChanged(nameof(OperationMode));
+        OnPropertyChanged(nameof(IsBridgeMode));
+        OnPropertyChanged(nameof(IsMonitorMode));
+        UpdateFtdiWarningVisibility();
+    }
+
+    partial void OnSelectedLogLevelChanged(LabeledOption<LogLevel>? value)
+    {
+        if (value is not null)
+            _logger.MinimumLevel = value.Value;
+    }
 
     partial void OnSelectedOutputTypeChanged(string value)
     {
         RefreshOutputDevices();
         OnPropertyChanged(nameof(IsOpenDmxSelected));
-        OnPropertyChanged(nameof(CanUseOpenDmxBridge));
         UpdateFtdiWarningVisibility();
     }
 
-    partial void OnFtdiDriverAvailableChanged(bool value)
-    {
-        OnPropertyChanged(nameof(CanUseOpenDmxBridge));
-        UpdateFtdiWarningVisibility();
-    }
-    public bool IsBridgeMode => OperationMode == BridgeOperationMode.Bridge;
-
-    partial void OnOperationModeChanged(BridgeOperationMode value)
-    {
-        OnPropertyChanged(nameof(IsMonitorMode));
-        OnPropertyChanged(nameof(IsBridgeMode));
-        UpdateFtdiWarningVisibility();
-    }
-
-    partial void OnMinimumLogLevelChanged(LogLevel value) => _logger.MinimumLevel = value;
+    partial void OnFtdiDriverAvailableChanged(bool value) => UpdateFtdiWarningVisibility();
 
     partial void OnArtNetNetChanged(int value) => UpdateUniverseDisplay();
     partial void OnArtNetSubNetChanged(int value) => UpdateUniverseDisplay();
     partial void OnArtNetUniverseChanged(int value) => UpdateUniverseDisplay();
-
-    public bool IsMonitorMode => OperationMode == BridgeOperationMode.Monitor;
 
     [RelayCommand]
     private async Task ToggleBridgeAsync()
@@ -134,10 +152,10 @@ public partial class MainViewModel : ObservableObject, IDisposable
             return;
         }
 
-        if (OperationMode == BridgeOperationMode.Bridge && IsOpenDmxSelected && !FtdiDriverAvailable)
+        if (IsBridgeMode && IsOpenDmxSelected && !FtdiDriverAvailable)
         {
             _logger.Warning(
-                FtdiDriverMessage ?? "FTD2XX.dll absente — utilisez le mode Monitor ou installez le pilote FTDI.",
+                FtdiDriverMessage ?? "FTD2XX.dll absente — passez en mode Monitor ou installez le pilote FTDI.",
                 nameof(MainViewModel));
             return;
         }
@@ -150,7 +168,7 @@ public partial class MainViewModel : ObservableObject, IDisposable
             (byte)Math.Clamp(ArtNetSubNet, 0, 15),
             (byte)Math.Clamp(ArtNetUniverse, 0, 15)));
 
-        if (OperationMode == BridgeOperationMode.Bridge && SelectedOutputDevice is not null)
+        if (IsBridgeMode && SelectedOutputDevice is not null)
         {
             var output = _outputFactory.Create(SelectedOutputType);
             await output.ConnectAsync(SelectedOutputDevice);
@@ -158,7 +176,7 @@ public partial class MainViewModel : ObservableObject, IDisposable
 
         await _bridge.StartAsync();
         IsBridgeRunning = true;
-        StatusText = OperationMode == BridgeOperationMode.Monitor ? "Analyse" : "En cours";
+        StatusText = IsMonitorMode ? "Analyse" : "En cours";
     }
 
     [RelayCommand]
@@ -202,9 +220,9 @@ public partial class MainViewModel : ObservableObject, IDisposable
         }
 
         SelectedOutputDevice ??= OutputDevices.Count > 0 ? OutputDevices[0] : null;
-        OutputInfo = FtdiDriverAvailable
-            ? SelectedOutputDevice?.Description ?? "Aucun périphérique"
-            : FtdiDriverMessage ?? "Sortie OpenDMX indisponible";
+        OutputInfo = !FtdiDriverAvailable && IsOpenDmxSelected
+            ? FtdiDriverMessage ?? "Sortie OpenDMX indisponible"
+            : SelectedOutputDevice?.Description ?? "Aucun périphérique détecté";
     }
 
     [RelayCommand]
@@ -233,9 +251,13 @@ public partial class MainViewModel : ObservableObject, IDisposable
         ArtNetSubNet = s.ArtNetSubNet;
         ArtNetUniverse = s.ArtNetUniverse;
         SelectedOutputType = s.OutputType;
-        OperationMode = s.OperationMode;
-        MinimumLogLevel = s.MinimumLogLevel;
-        _logger.MinimumLevel = s.MinimumLogLevel;
+
+        SelectedOperationMode = FindOption(OperationModeOptions, s.OperationMode)
+                              ?? OperationModeOptions[0];
+        SelectedLogLevel = FindOption(LogLevelOptions, s.MinimumLogLevel)
+                           ?? LogLevelOptions[3];
+        _logger.MinimumLevel = SelectedLogLevel.Value;
+
         UpdateUniverseDisplay();
 
         foreach (var entry in _logger.GetRecentEntries(200))
@@ -253,9 +275,20 @@ public partial class MainViewModel : ObservableObject, IDisposable
             s.OutputType = SelectedOutputType;
             s.OutputDeviceId = SelectedOutputDevice?.Id;
             s.OperationMode = OperationMode;
-            s.MinimumLogLevel = MinimumLogLevel;
+            s.MinimumLogLevel = SelectedLogLevel?.Value ?? LogLevel.Info;
         });
         _settings.Save();
+    }
+
+    private static LabeledOption<T>? FindOption<T>(IEnumerable<LabeledOption<T>> options, T value)
+    {
+        foreach (var option in options)
+        {
+            if (EqualityComparer<T>.Default.Equals(option.Value, value))
+                return option;
+        }
+
+        return null;
     }
 
     private void UpdateUniverseDisplay() =>
@@ -287,8 +320,10 @@ public partial class MainViewModel : ObservableObject, IDisposable
         LostSequences = stats.LostSequences;
         OutOfOrderPackets = stats.OutOfOrderPackets;
         LastPacketMs = stats.LastPacketMs;
-        OutputInfo = stats.OutputDescription ?? OutputInfo;
         MonitorSource = monitor.Source;
+
+        if (IsBridgeRunning)
+            OutputInfo = stats.OutputDescription ?? OutputInfo;
 
         MonitorSummary = $"Univers {monitor.Universe}\n" +
                          $"FPS Art-Net : {monitor.ArtNetFps:F1}\n" +

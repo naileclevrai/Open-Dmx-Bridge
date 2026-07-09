@@ -28,7 +28,8 @@ UI (WPF / MVVM)
 
 - **Double buffer atomique** (`Interlocked.Exchange`) entre thread réseau et moteur DMX
 - **Horloge précise** Stopwatch avec correction de dérive (~44 Hz)
-- **Timings OpenDMX** : break 100 µs, MAB 12 µs, start code + 512 slots
+- **Timings OpenDMX** : break/MAB réglables — validation oscilloscope requise ([docs/DMX_TIMING.md](docs/DMX_TIMING.md))
+- **FTD2XX.dll** chargée dynamiquement (`NativeLibrary`) — démarrage sans DLL, mode Monitor OK
 - **Reconnexion USB** automatique sans fermeture de l'application
 - **Zéro allocation** dans les boucles réseau et DMX (buffer pré-alloué, pas de LINQ)
 

@@ -27,6 +27,13 @@ public partial class App : Application
         var settings = Services.GetRequiredService<ISettingsService>();
         settings.Load();
 
+        var ftdiStatus = Services.GetRequiredService<IFtdiDriverStatus>();
+        ftdiStatus.Probe();
+
+        var logger = Services.GetRequiredService<ILoggingService>();
+        if (!ftdiStatus.IsAvailable)
+            logger.Warning(ftdiStatus.UnavailableMessage ?? "Sortie OpenDMX indisponible.", nameof(App));
+
         var mainWindow = new MainWindow
         {
             DataContext = Services.GetRequiredService<MainViewModel>()
@@ -38,6 +45,7 @@ public partial class App : Application
     {
         services.AddSingleton<ILoggingService, LoggingService>();
         services.AddSingleton<ISettingsService, SettingsService>();
+        services.AddSingleton<IFtdiDriverStatus, FtdiDriverStatus>();
 
         services.AddSingleton<OpenDmxOutput>();
         services.AddSingleton<NullDmxOutput>();

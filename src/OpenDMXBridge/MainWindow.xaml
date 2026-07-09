@@ -16,10 +16,12 @@
         <conv:LogLevelToBrushConverter x:Key="LogLevelBrushConverter"/>
         <conv:BridgeToggleTextConverter x:Key="BridgeToggleTextConverter"/>
         <conv:FtdiStateConverter x:Key="OutputStateConverter"/>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
     </Window.Resources>
 
     <Grid Margin="12">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -32,6 +34,17 @@
         </Grid.ColumnDefinitions>
 
         <Border Grid.Row="0" Grid.ColumnSpan="3"
+                Background="#3A2A14"
+                BorderBrush="#8A6020"
+                BorderThickness="1"
+                CornerRadius="4"
+                Padding="12,8"
+                Margin="0,0,0,10"
+                Visibility="{Binding ShowFtdiWarning, Converter={StaticResource BoolToVisibilityConverter}}">
+            <TextBlock Text="{Binding FtdiDriverMessage}" TextWrapping="Wrap" Foreground="#F0C060"/>
+        </Border>
+
+        <Border Grid.Row="1" Grid.ColumnSpan="3"
                 Background="{StaticResource PanelBrush}"
                 BorderBrush="{StaticResource BorderBrush}"
                 BorderThickness="1" CornerRadius="4" Padding="14,10" Margin="0,0,0,10">
@@ -46,7 +59,7 @@
             </DockPanel>
         </Border>
 
-        <StackPanel Grid.Row="2" Grid.Column="0" Grid.RowSpan="2">
+        <StackPanel Grid.Row="3" Grid.Column="0" Grid.RowSpan="2">
             <Border Background="{StaticResource PanelBrush}" BorderBrush="{StaticResource BorderBrush}"
                     BorderThickness="1" CornerRadius="4" Padding="12" Margin="0,0,0,10">
                 <StackPanel>
@@ -113,7 +126,7 @@
             </Border>
         </StackPanel>
 
-        <Border Grid.Row="1" Grid.Column="2" Background="{StaticResource PanelBrush}"
+        <Border Grid.Row="2" Grid.Column="2" Background="{StaticResource PanelBrush}"
                 BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="4"
                 Padding="12,8" Margin="0,0,0,10">
             <UniformGrid Rows="2" Columns="5">
@@ -166,7 +179,7 @@
             </UniformGrid>
         </Border>
 
-        <Border Grid.Row="2" Grid.Column="2" Background="{StaticResource PanelBrush}"
+        <Border Grid.Row="3" Grid.Column="2" Background="{StaticResource PanelBrush}"
                 BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="4" Padding="8">
             <DockPanel>
                 <TextBlock DockPanel.Dock="Top" Text="Monitoring 512 canaux" FontWeight="SemiBold" Margin="4,4,4,8"/>
@@ -174,7 +187,7 @@
             </DockPanel>
         </Border>
 
-        <Border Grid.Row="3" Grid.Column="2" Background="{StaticResource PanelBrush}"
+        <Border Grid.Row="4" Grid.Column="2" Background="{StaticResource PanelBrush}"
                 BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="4"
                 Padding="8" Margin="0,10,0,0">
             <DockPanel>

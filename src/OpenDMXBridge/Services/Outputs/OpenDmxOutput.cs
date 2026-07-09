@@ -6,28 +6,29 @@ using OpenDMXBridge.Services.Ftdi;
 namespace OpenDMXBridge.Services.Outputs;
 
 /// <summary>
-/// Sortie OpenDMX via FTD2XX avec timings DMX512 (break / MAB / start code / 512 slots)
-/// et reconnexion USB automatique.
+/// Sortie OpenDMX via FTD2XX (chargement dynamique) avec timings DMX512 et diagnostics.
 /// </summary>
 public sealed class OpenDmxOutput : IDmxOutput
 {
     private const int DmxSlots = 513;
-    private const double BreakMicroseconds = 100;
-    private const double MabMicroseconds = 12;
+    private const int TimingLogInterval = 1000;
 
     private readonly ILoggingService _logger;
+    private readonly ISettingsService _settings;
     private readonly object _ioLock = new();
     private readonly byte[] _frameBuffer = new byte[DmxSlots];
 
     private IntPtr _handle = IntPtr.Zero;
     private DmxOutputDevice? _connectedDevice;
     private long _framesSent;
+    private long _timingSampleCounter;
     private volatile bool _watchdogRunning;
     private Thread? _watchdogThread;
 
-    public OpenDmxOutput(ILoggingService logger)
+    public OpenDmxOutput(ILoggingService logger, ISettingsService settings)
     {
         _logger = logger;
+        _settings = settings;
         _frameBuffer[0] = 0x00;
     }
 
@@ -35,6 +36,17 @@ public sealed class OpenDmxOutput : IDmxOutput
     public string DisplayName => "Enttec Open DMX (FTDI)";
     public bool SupportsAutoReconnect => true;
     public long FramesSent => Interlocked.Read(ref _framesSent);
+
+    public bool IsDriverAvailable
+    {
+        get
+        {
+            FtdiNative.EnsureProbed();
+            return FtdiNative.IsAvailable();
+        }
+    }
+
+    public string? DriverUnavailableMessage => FtdiNative.UnavailableReason;
 
     public bool IsConnected
     {
@@ -56,9 +68,13 @@ public sealed class OpenDmxOutput : IDmxOutput
 
     public IReadOnlyList<DmxOutputDevice> EnumerateDevices()
     {
+        FtdiNative.EnsureProbed();
+
         if (!FtdiNative.IsAvailable())
         {
-            _logger.Warning("FTD2XX.dll introuvable ou architecture incompatible.", nameof(OpenDmxOutput));
+            var reason = FtdiNative.UnavailableReason
+                         ?? "FTD2XX.dll indisponible — sortie OpenDMX désactivée.";
+            _logger.Warning(reason, nameof(OpenDmxOutput));
             return Array.Empty<DmxOutputDevice>();
         }
 
@@ -101,9 +117,10 @@ public sealed class OpenDmxOutput : IDmxOutput
             {
                 DisconnectInternal();
 
+                FtdiNative.EnsureProbed();
                 if (!FtdiNative.IsAvailable())
                 {
-                    _logger.Error("FTD2XX.dll non disponible.", nameof(OpenDmxOutput));
+                    _logger.Error(FtdiNative.UnavailableReason ?? "FTD2XX.dll non disponible.", nameof(OpenDmxOutput));
                     return false;
                 }
 
@@ -119,6 +136,9 @@ public sealed class OpenDmxOutput : IDmxOutput
                 StartWatchdog();
 
                 _logger.Info($"OpenDMX connecté : {device.Description}", nameof(OpenDmxOutput));
+                _logger.Info(
+                    "Validez les timings break/MAB à l'oscilloscope (Break ≥ 88 µs, MAB ≥ 8 µs, 250 kbaud 8N2).",
+                    nameof(OpenDmxOutput));
                 return true;
             }
         }, cancellationToken);
@@ -163,13 +183,21 @@ public sealed class OpenDmxOutput : IDmxOutput
 
     private void TransmitDmx512Frame(IntPtr handle, byte[] buffer)
     {
-        Check(FtdiNative.FT_SetBaudRate(handle, FtdiNative.BaudDmx));
+        var cfg = _settings.Current;
+        var breakUs = Math.Max(cfg.BreakMicroseconds, (int)Dmx512Timing.MinBreakMicroseconds);
+        var mabUs = Math.Max(cfg.MabMicroseconds, (int)Dmx512Timing.MinMabMicroseconds);
+        var logDiagnostics = cfg.EnableTimingDiagnostics;
 
-        Check(FtdiNative.FT_SetBreakOn(handle));
-        HighResolutionWait.Microseconds(BreakMicroseconds);
+        Check(FtdiNative.FT_SetBaudRate(handle, Dmx512Timing.DmxBaudRate));
 
-        Check(FtdiNative.FT_SetBreakOff(handle));
-        HighResolutionWait.Microseconds(MabMicroseconds);
+        var timing = Dmx512Timing.MeasureBreakAndMab(
+            () => Check(FtdiNative.FT_SetBreakOn(handle)),
+            () => Check(FtdiNative.FT_SetBreakOff(handle)),
+            breakUs,
+            mabUs);
+
+        if (logDiagnostics)
+            LogTimingSample(timing, breakUs, mabUs);
 
         uint written = 0;
         Check(FtdiNative.FT_Write(handle, buffer, buffer.Length, ref written));
@@ -179,10 +207,32 @@ public sealed class OpenDmxOutput : IDmxOutput
         Check(FtdiNative.FT_Purge(handle, FtdiNative.PurgeTx));
     }
 
+    private void LogTimingSample(Dmx512Timing.FrameTimingMeasurement timing, double requestedBreak, double requestedMab)
+    {
+        var count = Interlocked.Increment(ref _timingSampleCounter);
+        if (count % TimingLogInterval != 0)
+            return;
+
+        _logger.Trace(
+            $"Timing logiciel — Break: {timing.Break.Microseconds:F1} µs (demandé {requestedBreak}), " +
+            $"MAB: {timing.Mab.Microseconds:F1} µs (demandé {requestedMab}). " +
+            "Mesure CPU/API uniquement ; valider à l'oscilloscope.",
+            nameof(OpenDmxOutput));
+
+        if (!timing.MeetsSpec)
+        {
+            _logger.Warning(
+                $"Timings logiciels sous spec DMX512 — Break: {timing.Break.Microseconds:F1} µs (min {Dmx512Timing.MinBreakMicroseconds}), " +
+                $"MAB: {timing.Mab.Microseconds:F1} µs (min {Dmx512Timing.MinMabMicroseconds}). " +
+                "Calibrez BreakMicroseconds/MabMicroseconds après mesure matérielle.",
+                nameof(OpenDmxOutput));
+        }
+    }
+
     private static void ConfigureOpenDmx(IntPtr handle)
     {
         Check(FtdiNative.FT_ResetDevice(handle));
-        Check(FtdiNative.FT_SetBaudRate(handle, FtdiNative.BaudDmx));
+        Check(FtdiNative.FT_SetBaudRate(handle, Dmx512Timing.DmxBaudRate));
         Check(FtdiNative.FT_SetDataCharacteristics(handle, FtdiNative.Bits8, FtdiNative.StopBits2, FtdiNative.ParityNone));
         Check(FtdiNative.FT_SetFlowControl(handle, FtdiNative.FlowNone, 0, 0));
         Check(FtdiNative.FT_SetLatencyTimer(handle, 1));
@@ -223,6 +273,9 @@ public sealed class OpenDmxOutput : IDmxOutput
                 if (_handle == IntPtr.Zero || _connectedDevice is null)
                     continue;
 
+                if (!FtdiNative.IsAvailable())
+                    continue;
+
                 uint rx = 0, tx = 0, events = 0;
                 if (FtdiNative.FT_GetStatus(_handle, ref rx, ref tx, ref events) != 0)
                 {
@@ -245,13 +298,17 @@ public sealed class OpenDmxOutput : IDmxOutput
     {
         if (_handle != IntPtr.Zero)
         {
-            FtdiNative.FT_Close(_handle);
+            if (FtdiNative.IsAvailable())
+                FtdiNative.FT_Close(_handle);
             _handle = IntPtr.Zero;
         }
     }
 
     private void TryReconnect(DmxOutputDevice device)
     {
+        if (!FtdiNative.IsAvailable())
+            return;
+
         _logger.Info("Tentative de reconnexion USB…", nameof(OpenDmxOutput));
 
         lock (_ioLock)
@@ -265,7 +322,6 @@ public sealed class OpenDmxOutput : IDmxOutput
                     ConfigureOpenDmx(_handle);
                     _connectedDevice = device;
                     _logger.Info("Reconnexion USB réussie — reprise DMX.", nameof(OpenDmxOutput));
-                    return;
                 }
                 catch (Exception ex)
                 {

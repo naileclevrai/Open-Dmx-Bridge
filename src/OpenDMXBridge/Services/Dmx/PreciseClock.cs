@@ -43,18 +43,3 @@ internal sealed class PrecisePeriodicLoop
     }
 }
 
-/// <summary>Attente haute résolution pour timings DMX512 (break / MAB).</summary>
-internal static class HighResolutionWait
-{
-    private static readonly double TicksPerMicrosecond = Stopwatch.Frequency / 1_000_000.0;
-
-    public static void Microseconds(double microseconds)
-    {
-        if (microseconds <= 0)
-            return;
-
-        var target = Stopwatch.GetTimestamp() + (long)(microseconds * TicksPerMicrosecond);
-        while (Stopwatch.GetTimestamp() < target)
-            Thread.SpinWait(10);
-    }
-}

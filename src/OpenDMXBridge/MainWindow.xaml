@@ -241,7 +241,8 @@
                                     </Grid.ColumnDefinitions>
                                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                         <TextBlock Text="Grand master" Style="{StaticResource StatLabel}" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                                        <Slider Width="180" Minimum="0" Maximum="255" Value="{Binding Master}" VerticalAlignment="Center"/>
+                                        <Slider Width="180" Minimum="0" Maximum="255" Value="{Binding Master}" VerticalAlignment="Center"
+                                                PreviewMouseLeftButtonDown="OnFaderMouseDown" PreviewMouseMove="OnFaderMouseMove" PreviewMouseLeftButtonUp="OnFaderMouseUp" LostMouseCapture="OnFaderLostCapture"/>
                                         <TextBlock Text="{Binding MasterPercent}" Width="48" Margin="10,0,0,0" VerticalAlignment="Center"
                                                    Foreground="{StaticResource TextPrimaryBrush}"/>
                                     </StackPanel>
@@ -281,7 +282,8 @@
                                                             HorizontalAlignment="Stretch" Padding="0,2" FontSize="13" Margin="0,4,0,0"/>
                                                 </StackPanel>
                                                 <Slider Orientation="Vertical" Minimum="0" Maximum="255" Value="{Binding Level}"
-                                                        HorizontalAlignment="Center" IsMoveToPointEnabled="True"/>
+                                                        HorizontalAlignment="Center"
+                                                        PreviewMouseLeftButtonDown="OnFaderMouseDown" PreviewMouseMove="OnFaderMouseMove" PreviewMouseLeftButtonUp="OnFaderMouseUp" LostMouseCapture="OnFaderLostCapture"/>
                                             </DockPanel>
                                         </Border>
                                     </DataTemplate>

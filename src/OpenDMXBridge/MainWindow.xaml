@@ -61,7 +61,7 @@
                                Foreground="{StaticResource TextPrimaryBrush}"/>
                     <TextBlock Text="Art-Net vers Open DMX USB" FontSize="11" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,1,0,0"/>
                 </StackPanel>
-                <Border Margin="16,0,0,0" VerticalAlignment="Center" CornerRadius="999" Padding="12,4"
+                <Border Margin="16,0,0,0" VerticalAlignment="Center" CornerRadius="12" Padding="12,4"
                         Background="#B3FFFFFF" BorderBrush="{StaticResource GlassBorderBrush}" BorderThickness="1">
                     <StackPanel Orientation="Horizontal">
                         <Ellipse Width="8" Height="8" Margin="0,0,6,0" VerticalAlignment="Center"
@@ -72,7 +72,7 @@
                 </Border>
             </StackPanel>
             <Button Grid.Column="1" Style="{StaticResource MacPrimaryButton}"
-                    MinWidth="128" Height="34" VerticalAlignment="Center" FontSize="13"
+                    MinWidth="128" Height="32" VerticalAlignment="Center" FontSize="13"
                     Command="{Binding ToggleBridgeCommand}"
                     Content="{Binding IsBridgeRunning, Converter={StaticResource BridgeToggleTextConverter}}"/>
         </Grid>

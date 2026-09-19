@@ -57,7 +57,7 @@
                 <Setter Property="BorderBrush" Value="{StaticResource GlassBorderBrush}"/>
                 <Setter Property="BorderThickness" Value="1"/>
                 <Setter Property="Padding" Value="14,0"/>
-                <Setter Property="MinHeight" Value="28"/>
+                <Setter Property="Height" Value="28"/>
                 <Setter Property="MinWidth" Value="26"/>
                 <Setter Property="FontSize" Value="12"/>
                 <Setter Property="Cursor" Value="Arrow"/>
@@ -67,7 +67,7 @@
                     <Setter.Value>
                         <ControlTemplate TargetType="Button">
                             <Border x:Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
-                                    BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="999" Padding="{TemplateBinding Padding}"
+                                    BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="14" Padding="{TemplateBinding Padding}"
                                     SnapsToDevicePixels="True">
                                 <Border.Effect>
                                     <DropShadowEffect BlurRadius="6" ShadowDepth="1" Direction="270" Opacity="0.10" Color="#1B2B4B"/>
@@ -109,7 +109,7 @@
                     <Setter.Value>
                         <ControlTemplate TargetType="Button">
                             <Border x:Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
-                                    BorderThickness="1" CornerRadius="999" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
+                                    BorderThickness="1" CornerRadius="16" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
                                 <Border.Effect>
                                     <DropShadowEffect BlurRadius="14" ShadowDepth="3" Direction="270" Opacity="0.35" Color="#007AFF"/>
                                 </Border.Effect>
@@ -133,14 +133,14 @@
                 <Setter Property="Background" Value="#B3FFFFFF"/>
                 <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
                 <Setter Property="BorderBrush" Value="{StaticResource GlassBorderBrush}"/>
-                <Setter Property="MinHeight" Value="28"/>
+                <Setter Property="Height" Value="28"/>
                 <Setter Property="Padding" Value="14,0"/>
                 <Setter Property="FontSize" Value="12"/>
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="ToggleButton">
                             <Border x:Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
-                                    BorderThickness="1" CornerRadius="999" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
+                                    BorderThickness="1" CornerRadius="14" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
                                 <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Border>
                             <ControlTemplate.Triggers>
@@ -172,7 +172,7 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="TabItem">
-                            <Border x:Name="Bd" Background="Transparent" CornerRadius="999" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
+                            <Border x:Name="Bd" Background="Transparent" CornerRadius="13" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
                                 <ContentPresenter x:Name="Content" ContentSource="Header" HorizontalAlignment="Center" VerticalAlignment="Center"
                                                   TextElement.FontWeight="Medium"/>
                             </Border>
@@ -212,7 +212,7 @@
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
-                                <Border Grid.Row="0" Background="#1F1B2B4B" BorderBrush="#40FFFFFF" BorderThickness="1" CornerRadius="999" Padding="3"
+                                <Border Grid.Row="0" Background="#1F1B2B4B" BorderBrush="#40FFFFFF" BorderThickness="1" CornerRadius="16" Padding="3"
                                         HorizontalAlignment="Center" Margin="0,0,0,14">
                                     <TabPanel IsItemsHost="True"/>
                                 </Border>
@@ -227,7 +227,7 @@
             <Style TargetType="ComboBox" BasedOn="{StaticResource {x:Type ComboBox}}">
                 <Setter Property="ui:ControlHelper.CornerRadius" Value="10"/>
                 <Setter Property="Background" Value="#99FFFFFF"/>
-                <Setter Property="MinHeight" Value="28"/>
+                <Setter Property="Height" Value="28"/>
                 <Setter Property="FontSize" Value="12"/>
                 <Setter Property="VerticalContentAlignment" Value="Center"/>
                 <Setter Property="BorderBrush" Value="{StaticResource GlassBorderBrush}"/>

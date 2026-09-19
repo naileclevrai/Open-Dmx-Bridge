@@ -272,7 +272,7 @@ Les issues et pull requests sont bienvenues.
 
 ## Licence
 
-Distribué sous licence **Apache 2.0**. Voir [LICENSE](LICENSE).
+Distribué sous licence **Apache 2.0**. Voir [LICENSE](LICENSE) et [NOTICE](NOTICE) pour les composants tiers.
 
 <div align="center">
 <sub>Fait pour les régisseurs lumière qui veulent brancher un boîtier à 30 € sur une console à 30 000 €.</sub>

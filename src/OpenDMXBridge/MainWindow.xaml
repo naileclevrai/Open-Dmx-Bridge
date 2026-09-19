@@ -282,7 +282,7 @@
                                 </ItemsControl.ItemsPanel>
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
-                                        <Border Margin="3,0" Padding="4,8" CornerRadius="6" Background="#F7F7F7"
+                                        <Border Margin="3,0" Padding="4,8" CornerRadius="8" Background="#F7F7F9"
                                                 BorderBrush="{StaticResource CardBorderBrush}" BorderThickness="1">
                                             <DockPanel>
                                                 <TextBlock DockPanel.Dock="Top" Text="{Binding Channel}" FontWeight="SemiBold"

@@ -95,7 +95,7 @@ public class DmxChannelMonitor : UserControl
     {
         var pixels = _pixelBuffer;
         var bg = Color.FromRgb(0xFF, 0xFF, 0xFF);
-        var cell = Color.FromRgb(0xEC, 0xEC, 0xEC);
+        var cell = Color.FromRgb(0xEF, 0xEF, 0xF4);
         Fill(pixels, bg);
 
         for (var i = 0; i < ChannelCount; i++)
@@ -106,7 +106,7 @@ public class DmxChannelMonitor : UserControl
             var y0 = Gap + row * (CellHeight + Gap);
             var level = _levels[i] / 255.0;
             var barH = (int)Math.Round(level * CellHeight);
-            var color = Color.FromRgb(0x00, (byte)(0x67 + level * 0x30), (byte)(0xC0 + level * 0x3F));
+            var color = Color.FromRgb((byte)(0x00 + level * 0x1A), (byte)(0x7A + level * 0x24), 0xFF); // bleu macOS #007AFF → #1A9EFF
 
             for (var y = y0; y < y0 + CellHeight; y++)
                 for (var x = x0; x < x0 + CellWidth; x++)

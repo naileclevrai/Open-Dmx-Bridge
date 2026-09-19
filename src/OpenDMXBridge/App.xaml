@@ -40,6 +40,15 @@
             <SolidColorBrush x:Key="WarnBorderBrush" Color="#B3FFFFFF"/>
             <SolidColorBrush x:Key="WarnTextBrush" Color="#7A4B00"/>
 
+            <!-- Verre translucide : dégradé blanc, bord lumineux, coins 22 px, ombre large et douce -->
+            <LinearGradientBrush x:Key="GlassFillBrush" StartPoint="0,0" EndPoint="0,1">
+                <GradientStop Color="#D9FFFFFF" Offset="0"/>
+                <GradientStop Color="#A6FFFFFF" Offset="1"/>
+            </LinearGradientBrush>
+            <SolidColorBrush x:Key="GlassBorderBrush" Color="#B3FFFFFF"/>
+            <SolidColorBrush x:Key="GlassInsetBrush" Color="#66FFFFFF"/>
+            <SolidColorBrush x:Key="GlassTrackBrush" Color="#26000000"/>
+
             <!-- Carte façon macOS : coins 10 px, bord fin, ombre très douce -->
             <!-- Boutons façon macOS -->
             <Style x:Key="MacButton" TargetType="Button">
@@ -339,15 +348,6 @@
             <SolidColorBrush x:Key="ToggleSwitchKnobFillOffPointerOver" Color="White"/>
             <SolidColorBrush x:Key="ToggleSwitchKnobFillOn" Color="White"/>
             <SolidColorBrush x:Key="ToggleSwitchKnobFillOnPointerOver" Color="White"/>
-
-            <!-- Verre translucide : dégradé blanc, bord lumineux, coins 22 px, ombre large et douce -->
-            <LinearGradientBrush x:Key="GlassFillBrush" StartPoint="0,0" EndPoint="0,1">
-                <GradientStop Color="#D9FFFFFF" Offset="0"/>
-                <GradientStop Color="#A6FFFFFF" Offset="1"/>
-            </LinearGradientBrush>
-            <SolidColorBrush x:Key="GlassBorderBrush" Color="#B3FFFFFF"/>
-            <SolidColorBrush x:Key="GlassInsetBrush" Color="#66FFFFFF"/>
-            <SolidColorBrush x:Key="GlassTrackBrush" Color="#26000000"/>
 
             <Style x:Key="Card" TargetType="Border">
                 <Setter Property="Background" Value="{StaticResource GlassFillBrush}"/>

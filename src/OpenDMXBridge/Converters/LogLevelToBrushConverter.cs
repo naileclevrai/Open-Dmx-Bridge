@@ -1,34 +1,26 @@
 using System.Globalization;
+using System.Windows;
 using System.Windows.Data;
+using System.Windows.Media;
 
 namespace OpenDMXBridge.Converters;
 
+/// <summary>Couleur d'une ligne de journal selon son niveau, lue dans le thème courant (Themes/*.xaml).</summary>
 public sealed class LogLevelToBrushConverter : IValueConverter
 {
     public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
         var key = value switch
         {
-            Services.Contracts.LogLevel.Trace => "Trace",
-            Services.Contracts.LogLevel.Debug => "Debug",
-            Services.Contracts.LogLevel.Info => "Info",
-            Services.Contracts.LogLevel.Warning => "Warning",
-            Services.Contracts.LogLevel.Error => "Error",
-            _ => value?.ToString() ?? ""
+            Services.Contracts.LogLevel.Error => "LogErrorColor",
+            Services.Contracts.LogLevel.Warning => "LogWarningColor",
+            Services.Contracts.LogLevel.Debug => "LogDebugColor",
+            Services.Contracts.LogLevel.Trace => "LogTraceColor",
+            _ => "LogInfoColor"
         };
 
-        var color = key switch
-        {
-            "Error" => "#FF3B30",
-            "Warning" or "WARN" => "#B25E00",
-            "Info" => "#1D1D1F",
-            "Debug" => "#7A7A7A",
-            "Trace" => "#9A9A9A",
-            _ => "#1B1B1B"
-        };
-
-        return new System.Windows.Media.SolidColorBrush(
-            (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(color)!);
+        var color = Application.Current?.TryFindResource(key) as Color? ?? Colors.Gray;
+        return new SolidColorBrush(color);
     }
 
     public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) =>

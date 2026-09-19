@@ -95,7 +95,9 @@ public class DmxChannelMonitor : UserControl
     {
         var pixels = _pixelBuffer;
         var bg = Color.FromArgb(0x00, 0xFF, 0xFF, 0xFF); // transparent : le verre reste visible
-        var cell = Color.FromArgb(0x2E, 0x1B, 0x2B, 0x4B);
+        var cell = ThemeColor("MonitorCellColor", Color.FromArgb(0x2E, 0x1B, 0x2B, 0x4B));
+        var low = ThemeColor("MonitorBarLowColor", Color.FromRgb(0x0A, 0x84, 0xFF));
+        var high = ThemeColor("MonitorBarHighColor", Color.FromRgb(0x3A, 0xC4, 0xFF));
         Fill(pixels, bg);
 
         for (var i = 0; i < ChannelCount; i++)
@@ -106,7 +108,7 @@ public class DmxChannelMonitor : UserControl
             var y0 = Gap + row * (CellHeight + Gap);
             var level = _levels[i] / 255.0;
             var barH = (int)Math.Round(level * CellHeight);
-            var color = Color.FromArgb(0xFF, (byte)(0x0A + level * 0x30), (byte)(0x84 + level * 0x40), 0xFF); // bleu #0A84FF → #3AC4FF
+            var color = Lerp(low, high, level);
 
             for (var y = y0; y < y0 + CellHeight; y++)
                 for (var x = x0; x < x0 + CellWidth; x++)
@@ -121,6 +123,13 @@ public class DmxChannelMonitor : UserControl
 
         _bitmap.WritePixels(new Int32Rect(0, 0, _pixelWidth, _pixelHeight), pixels, _stride, 0);
     }
+
+    private static Color ThemeColor(string key, Color fallback) =>
+        Application.Current?.TryFindResource(key) is Color c ? c : fallback;
+
+    private static Color Lerp(Color a, Color b, double t) => Color.FromArgb(
+        (byte)(a.A + (b.A - a.A) * t), (byte)(a.R + (b.R - a.R) * t),
+        (byte)(a.G + (b.G - a.G) * t), (byte)(a.B + (b.B - a.B) * t));
 
     private static void Fill(byte[] pixels, Color color)
     {

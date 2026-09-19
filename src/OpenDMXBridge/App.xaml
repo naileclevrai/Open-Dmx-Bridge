@@ -34,41 +34,50 @@
             <SolidColorBrush x:Key="WarnBorderBrush" Color="#FFD599"/>
             <SolidColorBrush x:Key="WarnTextBrush" Color="#7A4B00"/>
 
+            <!-- Carte façon macOS : coins 10 px, bord fin, ombre très douce -->
             <Style x:Key="Card" TargetType="Border">
                 <Setter Property="Background" Value="{StaticResource CardBrush}"/>
                 <Setter Property="BorderBrush" Value="{StaticResource CardBorderBrush}"/>
                 <Setter Property="BorderThickness" Value="1"/>
-                <Setter Property="CornerRadius" Value="6"/>
-                <Setter Property="Padding" Value="14,12"/>
+                <Setter Property="CornerRadius" Value="10"/>
+                <Setter Property="Padding" Value="16,14"/>
+                <Setter Property="SnapsToDevicePixels" Value="True"/>
+                <Setter Property="Effect">
+                    <Setter.Value>
+                        <DropShadowEffect BlurRadius="10" ShadowDepth="1" Direction="270" Opacity="0.06" Color="Black"/>
+                    </Setter.Value>
+                </Setter>
             </Style>
 
             <Style x:Key="SectionTitle" TargetType="TextBlock">
-                <Setter Property="FontSize" Value="14"/>
+                <Setter Property="FontSize" Value="13"/>
+                <Setter Property="FontFamily" Value="{StaticResource DisplayFont}"/>
                 <Setter Property="FontWeight" Value="SemiBold"/>
                 <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
                 <Setter Property="Margin" Value="0,0,0,10"/>
             </Style>
 
             <Style x:Key="FieldLabel" TargetType="TextBlock">
-                <Setter Property="FontSize" Value="12"/>
+                <Setter Property="FontSize" Value="11"/>
                 <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
                 <Setter Property="Margin" Value="0,8,0,4"/>
             </Style>
 
             <Style x:Key="Hint" TargetType="TextBlock">
-                <Setter Property="FontSize" Value="12"/>
+                <Setter Property="FontSize" Value="11"/>
                 <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
                 <Setter Property="TextWrapping" Value="Wrap"/>
                 <Setter Property="Margin" Value="0,6,0,0"/>
             </Style>
 
             <Style x:Key="StatLabel" TargetType="TextBlock">
-                <Setter Property="FontSize" Value="12"/>
+                <Setter Property="FontSize" Value="11"/>
                 <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
             </Style>
 
             <Style x:Key="StatValue" TargetType="TextBlock">
-                <Setter Property="FontSize" Value="20"/>
+                <Setter Property="FontSize" Value="22"/>
+                <Setter Property="FontFamily" Value="{StaticResource DisplayFont}"/>
                 <Setter Property="FontWeight" Value="SemiBold"/>
                 <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
                 <Setter Property="Margin" Value="0,2,0,0"/>

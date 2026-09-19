@@ -14,7 +14,7 @@
         TextOptions.TextRenderingMode="ClearType"
         UseLayoutRounding="True"
         FontSize="13"
-        Background="{StaticResource WallpaperBrush}"
+        Background="{DynamicResource WallpaperBrush}"
         WindowStartupLocation="CenterScreen">
     <WindowChrome.WindowChrome>
         <!-- Chrome natif : Windows dessine un seul jeu de boutons de fenêtre sur le verre -->
@@ -50,16 +50,16 @@
                 </Image>
                 <StackPanel VerticalAlignment="Center">
                     <TextBlock Text="OpenDMX Bridge" FontSize="20" FontWeight="SemiBold" FontFamily="{StaticResource DisplayFont}"
-                               Foreground="{StaticResource TextPrimaryBrush}"/>
-                    <TextBlock Text="Art-Net vers Open DMX USB" FontSize="11" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,1,0,0"/>
+                               Foreground="{DynamicResource TextPrimaryBrush}"/>
+                    <TextBlock Text="Art-Net vers Open DMX USB" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1,0,0"/>
                 </StackPanel>
                 <Border Margin="16,0,0,0" VerticalAlignment="Center" CornerRadius="12" Padding="12,4"
-                        Background="#B3FFFFFF" BorderBrush="{StaticResource GlassBorderBrush}" BorderThickness="1">
+                        Background="{DynamicResource ControlFillBrush}" BorderBrush="{DynamicResource GlassBorderBrush}" BorderThickness="1">
                     <StackPanel Orientation="Horizontal">
                         <Ellipse Width="8" Height="8" Margin="0,0,6,0" VerticalAlignment="Center"
                                  Fill="{Binding IsBridgeRunning, Converter={StaticResource StatusBrushConverter}}"/>
                         <TextBlock Text="{Binding StatusText}" FontSize="11" FontWeight="Medium"
-                                   Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
+                                   Foreground="{DynamicResource TextPrimaryBrush}" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Border>
             </StackPanel>
@@ -70,12 +70,12 @@
         </Grid>
         <!-- Alerte FTDI -->
         <Border Grid.Row="1"
-                Background="{StaticResource WarnBgBrush}"
-                BorderBrush="{StaticResource WarnBorderBrush}"
+                Background="{DynamicResource WarnBgBrush}"
+                BorderBrush="{DynamicResource WarnBorderBrush}"
                 BorderThickness="1" CornerRadius="16" Padding="14,10" Margin="0,0,0,14"
                 Visibility="{Binding ShowFtdiWarning, Converter={StaticResource BoolToVisibilityConverter}}">
             <TextBlock Text="{Binding FtdiDriverMessage}" TextWrapping="Wrap"
-                       Foreground="{StaticResource WarnTextBrush}"/>
+                       Foreground="{DynamicResource WarnTextBrush}"/>
         </Border>
 
         <!-- Corps -->
@@ -164,7 +164,7 @@
                                         <Ellipse Width="10" Height="10" Margin="0,0,6,0" VerticalAlignment="Center"
                                                  Fill="{Binding ArtNetActive, Converter={StaticResource StatusBrushConverter}}"/>
                                         <TextBlock Text="{Binding MonitorSource}" FontWeight="SemiBold" FontSize="14"
-                                                   Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
+                                                   Foreground="{DynamicResource TextPrimaryBrush}" VerticalAlignment="Center"/>
                                     </StackPanel>
                                 </StackPanel>
                                 <StackPanel Margin="0,0,12,14">
@@ -186,7 +186,7 @@
                                                  Fill="{Binding DmxOutputConnected, Converter={StaticResource StatusBrushConverter}}"/>
                                         <TextBlock Text="{Binding DmxOutputConnected, Converter={StaticResource OutputStateConverter}}"
                                                    FontWeight="SemiBold" FontSize="14"
-                                                   Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
+                                                   Foreground="{DynamicResource TextPrimaryBrush}" VerticalAlignment="Center"/>
                                     </StackPanel>
                                 </StackPanel>
 
@@ -247,7 +247,7 @@
                                 <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
                                     <Button Content="&#x25C0;" Command="{Binding PreviousPageCommand}" Width="36" Padding="0" FontSize="10"/>
                                     <TextBlock Text="{Binding PageDisplay}" Width="120" TextAlignment="Center" VerticalAlignment="Center" FontWeight="SemiBold"
-                                               Foreground="{StaticResource TextPrimaryBrush}"/>
+                                               Foreground="{DynamicResource TextPrimaryBrush}"/>
                                     <Button Content="&#x25B6;" Command="{Binding NextPageCommand}" Width="36" Padding="0" FontSize="10"/>
                                 </StackPanel>
                                 <ComboBox Grid.Row="0" Grid.Column="2" Width="236" HorizontalAlignment="Right" VerticalAlignment="Center"
@@ -260,7 +260,7 @@
                                     <Slider Width="140" Minimum="0" Maximum="255" Value="{Binding Master}" VerticalAlignment="Center"
                                             PreviewMouseLeftButtonDown="OnFaderMouseDown" PreviewMouseMove="OnFaderMouseMove" PreviewMouseLeftButtonUp="OnFaderMouseUp" LostMouseCapture="OnFaderLostCapture"/>
                                     <TextBlock Text="{Binding MasterPercent}" Width="44" Margin="8,0,0,0" VerticalAlignment="Center"
-                                               Foreground="{StaticResource TextPrimaryBrush}"/>
+                                               Foreground="{DynamicResource TextPrimaryBrush}"/>
                                 </StackPanel>
                                 <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding HeldSummary}" Style="{StaticResource Hint}" Margin="0"
                                            HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -284,11 +284,11 @@
                                     </ItemsControl.ItemsPanel>
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
-                                            <Border Margin="4,0" Padding="4,12" CornerRadius="16" Background="#66FFFFFF"
-                                                    BorderBrush="{StaticResource GlassInsetBrush}" BorderThickness="1">
+                                            <Border Margin="4,0" Padding="4,12" CornerRadius="16" Background="{DynamicResource FaderCellBrush}"
+                                                    BorderBrush="{DynamicResource GlassInsetBrush}" BorderThickness="1">
                                                 <DockPanel>
                                                     <TextBlock DockPanel.Dock="Top" Text="{Binding Channel}" FontWeight="SemiBold" FontSize="13"
-                                                               HorizontalAlignment="Center" Foreground="{StaticResource TextPrimaryBrush}"/>
+                                                               HorizontalAlignment="Center" Foreground="{DynamicResource TextPrimaryBrush}"/>
                                                     <TextBlock DockPanel.Dock="Top" Text="{Binding LevelPercent}" Style="{StaticResource StatLabel}"
                                                                HorizontalAlignment="Center" Margin="0,2,0,8"/>
                                                     <StackPanel DockPanel.Dock="Bottom" Margin="0,8,0,0">
@@ -334,7 +334,7 @@
                                     <Button Content="Effacer" Command="{Binding ClearLogsCommand}"/>
                                 </StackPanel>
                             </Grid>
-                            <Border Background="#80FFFFFF" CornerRadius="14" BorderBrush="{StaticResource GlassInsetBrush}" BorderThickness="1" Padding="6">
+                            <Border Background="{DynamicResource InsetFillBrush}" CornerRadius="14" BorderBrush="{DynamicResource GlassInsetBrush}" BorderThickness="1" Padding="6">
                                 <ListBox ItemsSource="{Binding LogEntries}" Background="Transparent" BorderThickness="0"
                                          ScrollViewer.HorizontalScrollBarVisibility="Auto"
                                          VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
@@ -362,10 +362,10 @@
                                 <TextBlock Text="Diagnostic" Style="{StaticResource SectionTitle}" Margin="0"/>
                                 <TextBlock Text="Résumé Art-Net / DMX en temps réel" Style="{StaticResource Hint}" Margin="0,2,0,0"/>
                             </StackPanel>
-                            <Border Background="#80FFFFFF" CornerRadius="14" BorderBrush="{StaticResource GlassInsetBrush}" BorderThickness="1" Padding="16,14"
+                            <Border Background="{DynamicResource InsetFillBrush}" CornerRadius="14" BorderBrush="{DynamicResource GlassInsetBrush}" BorderThickness="1" Padding="16,14"
                                     VerticalAlignment="Top">
                                 <TextBlock Text="{Binding MonitorSummary}" FontFamily="{StaticResource MonoFont}" FontSize="12" LineHeight="20"
-                                           Foreground="{StaticResource TextPrimaryBrush}" TextWrapping="Wrap"/>
+                                           Foreground="{DynamicResource TextPrimaryBrush}" TextWrapping="Wrap"/>
                             </Border>
                         </DockPanel>
                     </Border>

@@ -1,0 +1,104 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- ====================================================================
+         Thème SOMBRE — palette macOS / Liquid Glass, apparence sombre
+         Mêmes clés que Light.xaml.
+         ==================================================================== -->
+
+    <!-- Accent et états (variantes sombres d'Apple) -->
+    <SolidColorBrush x:Key="AccentBrush" Color="#0A84FF"/>
+    <SolidColorBrush x:Key="AccentPressedBrush" Color="#0060DF"/>
+    <SolidColorBrush x:Key="OkBrush" Color="#30D158"/>
+    <SolidColorBrush x:Key="KoBrush" Color="#FF453A"/>
+    <SolidColorBrush x:Key="KoBorderBrush" Color="#FF6961"/>
+
+    <!-- Fond de repli : dégradé nuit -->
+    <LinearGradientBrush x:Key="WallpaperBrush" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#1A1B2E" Offset="0"/>
+        <GradientStop Color="#2B1F45" Offset="0.5"/>
+        <GradientStop Color="#0E2236" Offset="1"/>
+    </LinearGradientBrush>
+    <SolidColorBrush x:Key="PageBrush" Color="#1C1C1E"/>
+
+    <!-- Textes -->
+    <SolidColorBrush x:Key="TextPrimaryBrush" Color="#F5F5F7"/>
+    <SolidColorBrush x:Key="TextSecondaryBrush" Color="#A1A1A6"/>
+    <SolidColorBrush x:Key="TextTertiaryBrush" Color="#6E6E73"/>
+    <SolidColorBrush x:Key="TextOnAccentBrush" Color="#FFFFFF"/>
+
+    <!-- Verre : cartes (blanc très dilué sur fond sombre) -->
+    <LinearGradientBrush x:Key="GlassFillBrush" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="#33FFFFFF" Offset="0"/>
+        <GradientStop Color="#1AFFFFFF" Offset="1"/>
+    </LinearGradientBrush>
+    <SolidColorBrush x:Key="GlassBorderBrush" Color="#33FFFFFF"/>
+    <SolidColorBrush x:Key="GlassInsetBrush" Color="#1FFFFFFF"/>
+    <SolidColorBrush x:Key="GlassTrackBrush" Color="#40FFFFFF"/>
+    <SolidColorBrush x:Key="InsetFillBrush" Color="#33000000"/>
+    <SolidColorBrush x:Key="FaderCellBrush" Color="#1AFFFFFF"/>
+    <SolidColorBrush x:Key="SeparatorLineBrush" Color="#26FFFFFF"/>
+
+    <!-- Boutons -->
+    <SolidColorBrush x:Key="ControlFillBrush" Color="#26FFFFFF"/>
+    <SolidColorBrush x:Key="ControlHoverFillBrush" Color="#40FFFFFF"/>
+    <SolidColorBrush x:Key="ControlPressedFillBrush" Color="#14FFFFFF"/>
+    <SolidColorBrush x:Key="ControlDisabledFillBrush" Color="#0DFFFFFF"/>
+    <LinearGradientBrush x:Key="PrimaryFillBrush" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="#3D9BFF" Offset="0"/>
+        <GradientStop Color="#0A84FF" Offset="1"/>
+    </LinearGradientBrush>
+    <SolidColorBrush x:Key="PrimaryBorderBrush" Color="#4DFFFFFF"/>
+    <SolidColorBrush x:Key="PrimaryDisabledBrush" Color="#2A4C78"/>
+
+    <!-- Champs et menus -->
+    <SolidColorBrush x:Key="FieldFillBrush" Color="#26FFFFFF"/>
+    <SolidColorBrush x:Key="FieldHoverFillBrush" Color="#33FFFFFF"/>
+    <SolidColorBrush x:Key="FieldFocusFillBrush" Color="#40FFFFFF"/>
+    <SolidColorBrush x:Key="PopupFillBrush" Color="#F21E1E24"/>
+    <SolidColorBrush x:Key="TextSelectionBrush" Color="#800A84FF"/>
+
+    <!-- Sélecteur segmenté -->
+    <SolidColorBrush x:Key="SegmentTrackBrush" Color="#40000000"/>
+    <SolidColorBrush x:Key="SegmentHoverBrush" Color="#26FFFFFF"/>
+    <SolidColorBrush x:Key="IndicatorFillBrush" Color="#59FFFFFF"/>
+    <SolidColorBrush x:Key="IndicatorBorderBrush" Color="#33FFFFFF"/>
+
+    <!-- Sliders : le bouton reste clair, comme sur macOS sombre -->
+    <RadialGradientBrush x:Key="KnobFillBrush" GradientOrigin="0.5,0.25">
+        <GradientStop Color="#FFFFFFFF" Offset="0"/>
+        <GradientStop Color="#FFDADAE0" Offset="1"/>
+    </RadialGradientBrush>
+    <SolidColorBrush x:Key="KnobStrokeBrush" Color="#40000000"/>
+
+    <!-- Alerte -->
+    <SolidColorBrush x:Key="WarnBgBrush" Color="#59FF9F0A"/>
+    <SolidColorBrush x:Key="WarnBorderBrush" Color="#33FFFFFF"/>
+    <SolidColorBrush x:Key="WarnTextBrush" Color="#FFD60A"/>
+
+    <!-- Interrupteur (clés ModernWpf) -->
+    <SolidColorBrush x:Key="ToggleSwitchFillOn" Color="#30D158"/>
+    <SolidColorBrush x:Key="ToggleSwitchFillOnPointerOver" Color="#2CC251"/>
+    <SolidColorBrush x:Key="ToggleSwitchFillOnPressed" Color="#27B049"/>
+    <SolidColorBrush x:Key="ToggleSwitchStrokeOn" Color="#30D158"/>
+    <SolidColorBrush x:Key="ToggleSwitchStrokeOnPointerOver" Color="#2CC251"/>
+    <SolidColorBrush x:Key="ToggleSwitchStrokeOnPressed" Color="#27B049"/>
+    <SolidColorBrush x:Key="ToggleSwitchFillOff" Color="#4DFFFFFF"/>
+    <SolidColorBrush x:Key="ToggleSwitchFillOffPointerOver" Color="#59FFFFFF"/>
+    <SolidColorBrush x:Key="ToggleSwitchStrokeOff" Color="#33FFFFFF"/>
+    <SolidColorBrush x:Key="ToggleSwitchStrokeOffPointerOver" Color="#33FFFFFF"/>
+    <SolidColorBrush x:Key="ToggleSwitchKnobFillOff" Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="ToggleSwitchKnobFillOffPointerOver" Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="ToggleSwitchKnobFillOn" Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="ToggleSwitchKnobFillOnPointerOver" Color="#FFFFFF"/>
+
+    <!-- Moniteur 512 canaux et journal (lus depuis le code) -->
+    <Color x:Key="MonitorCellColor">#2EFFFFFF</Color>
+    <Color x:Key="MonitorBarLowColor">#0A84FF</Color>
+    <Color x:Key="MonitorBarHighColor">#64D2FF</Color>
+    <Color x:Key="LogInfoColor">#F5F5F7</Color>
+    <Color x:Key="LogDebugColor">#A1A1A6</Color>
+    <Color x:Key="LogTraceColor">#6E6E73</Color>
+    <Color x:Key="LogWarningColor">#FFD60A</Color>
+    <Color x:Key="LogErrorColor">#FF453A</Color>
+</ResourceDictionary>

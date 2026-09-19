@@ -311,7 +311,7 @@
                     </Border>
                 </TabItem>
                 <TabItem Header="Journal">
-                    <Border Style="{StaticResource Card}" Padding="14,10">
+                    <Border Style="{StaticResource Card}" Padding="16,12">
                         <DockPanel>
                                         <Grid DockPanel.Dock="Top" Margin="0,0,0,8">
                                             <Grid.ColumnDefinitions>
@@ -328,7 +328,7 @@
                                                 <Button Content="Effacer" Command="{Binding ClearLogsCommand}"/>
                                             </StackPanel>
                                         </Grid>
-                                        <ListBox ItemsSource="{Binding LogEntries}" Background="#FAFAFA"
+                                        <ListBox ItemsSource="{Binding LogEntries}" Background="#FAFAFC" ui:ControlHelper.CornerRadius="8"
                                                  BorderThickness="1" BorderBrush="{StaticResource CardBorderBrush}"
                                                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
                                                  VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">

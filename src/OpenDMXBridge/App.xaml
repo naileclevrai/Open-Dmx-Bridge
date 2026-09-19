@@ -9,6 +9,10 @@
                 <ui:XamlControlsResources/>
             </ResourceDictionary.MergedDictionaries>
 
+            <FontFamily x:Key="AppFont">SF Pro Text, SF Pro, Segoe UI</FontFamily>
+            <FontFamily x:Key="DisplayFont">SF Pro Display, SF Pro, Segoe UI</FontFamily>
+            <FontFamily x:Key="MonoFont">SF Mono, Cascadia Mono, Consolas</FontFamily>
+
             <SolidColorBrush x:Key="AccentBrush" Color="#0067C0"/>
             <SolidColorBrush x:Key="PageBrush" Color="#F3F3F3"/>
             <SolidColorBrush x:Key="CardBrush" Color="#FFFFFF"/>

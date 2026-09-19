@@ -10,7 +10,10 @@
         Width="1180"
         MinHeight="640"
         MinWidth="960"
-        FontFamily="Segoe UI"
+        FontFamily="{StaticResource AppFont}"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="ClearType"
+        UseLayoutRounding="True"
         FontSize="13"
         Background="{StaticResource PageBrush}"
         WindowStartupLocation="CenterScreen">
@@ -36,7 +39,7 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                <TextBlock Text="OpenDMX Bridge" FontSize="24" FontWeight="SemiBold"
+                <TextBlock Text="OpenDMX Bridge" FontSize="24" FontWeight="SemiBold" FontFamily="{StaticResource DisplayFont}"
                            Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
                 <Border Margin="14,0,0,0" VerticalAlignment="Center" CornerRadius="10" Padding="10,3"
                         Background="#E9E9E9">
@@ -322,7 +325,7 @@
                                             </ListBox.ItemContainerStyle>
                                             <ListBox.ItemTemplate>
                                                 <DataTemplate>
-                                                    <TextBlock Text="{Binding}" FontFamily="Cascadia Mono, Consolas" FontSize="12"
+                                                    <TextBlock Text="{Binding}" FontFamily="{StaticResource MonoFont}" FontSize="12"
                                                                Foreground="{Binding Level, Converter={StaticResource LogLevelBrushConverter}}"/>
                                                 </DataTemplate>
                                             </ListBox.ItemTemplate>
@@ -334,7 +337,7 @@
                     <Border Style="{StaticResource Card}">
                         <StackPanel>
                             <TextBlock Text="Résumé Art-Net / DMX" Style="{StaticResource SectionTitle}"/>
-                            <TextBlock Text="{Binding MonitorSummary}" FontFamily="Consolas" FontSize="12"
+                            <TextBlock Text="{Binding MonitorSummary}" FontFamily="{StaticResource MonoFont}" FontSize="12"
                                        Foreground="{StaticResource TextPrimaryBrush}" TextWrapping="Wrap"/>
                         </StackPanel>
                     </Border>

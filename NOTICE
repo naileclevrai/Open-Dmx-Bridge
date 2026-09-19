@@ -1,8 +1,8 @@
 OpenDMX Bridge
 Copyright 2025-2026 NailecMC (naileclevrai)
 
-This product is licensed under the Apache License, Version 2.0.
-See the LICENSE file for the full text.
+Licensed under the Apache License, Version 2.0.
+See the LICENSE file for the full license text.
 
 ------------------------------------------------------------------------
 Third-party components
@@ -31,11 +31,20 @@ to its own license terms:
     Copyright (c) .NET Foundation and Contributors
     Licensed under the MIT License.
 
-  .NET 8 Desktop Runtime and Windows Presentation Foundation (WPF)
+  .NET 8 (runtime and base class libraries)
+    https://github.com/dotnet/runtime
+    Copyright (c) .NET Foundation and Contributors
+    Licensed under the MIT License.
+
+  Windows Presentation Foundation (WPF)
     https://github.com/dotnet/wpf
     Copyright (c) .NET Foundation and Contributors
-    Licensed under the MIT License. The runtime is not bundled; it must be
-    installed separately by the end user.
+    Licensed under the MIT License.
+
+  This product targets net8.0-windows and is distributed as a
+  framework-dependent application: neither the .NET runtime nor WPF is
+  bundled. The end user installs the .NET 8 Desktop Runtime (which ships
+  WPF) separately from Microsoft.
 
 ------------------------------------------------------------------------
 Components used at runtime but NOT distributed with this product
@@ -46,7 +55,10 @@ Components used at runtime but NOT distributed with this product
     Copyright (c) Future Technology Devices International Ltd.
     Proprietary driver, subject to the FTDI Driver Licence Terms. This
     product loads FTD2XX.dll dynamically from the user's system when
-    present and does not redistribute it.
+    present. Release packages do not contain FTD2XX.dll. For convenience,
+    a local build copies the DLL already installed in the developer's
+    System32 folder next to the built executable; that copy is never
+    committed to the repository nor included in published releases.
 
   SF Pro (Text / Display) fonts
     Copyright (c) Apple Inc.

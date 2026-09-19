@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Threading;
@@ -6,6 +7,8 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Win32;
 using OpenDMXBridge.Models;
 using OpenDMXBridge.Services.Contracts;
+using OpenDMXBridge.Services.Ftdi;
+using OpenDMXBridge.Services.Outputs;
 
 namespace OpenDMXBridge.ViewModels;
 
@@ -19,6 +22,7 @@ public partial class MainViewModel : ObservableObject, IDisposable
     private readonly ILoggingService _logger;
     private readonly IFtdiDriverStatus _ftdiDriverStatus;
     private readonly DispatcherTimer _uiTimer;
+    private readonly ConcurrentQueue<LogEntry> _pendingLogEntries = new();
 
     public MainViewModel(
         ISettingsService settings,
@@ -70,6 +74,8 @@ public partial class MainViewModel : ObservableObject, IDisposable
 
         LoadFromSettings();
         RefreshAdapters();
+        if (FtdiUsbDiagnostics.FindFtdiComPorts().Count > 0)
+            _ftdiDriverStatus.ResetProbe();
         RefreshOutputDevices();
         UpdateFtdiDriverStatus();
     }
@@ -83,7 +89,9 @@ public partial class MainViewModel : ObservableObject, IDisposable
 
     [ObservableProperty] private LabeledOption<BridgeOperationMode>? _selectedOperationMode;
     [ObservableProperty] private LabeledOption<LogLevel>? _selectedLogLevel;
-    [ObservableProperty] private bool _isBridgeRunning;
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(ToggleBridgeCommand))]
+    private bool _isBridgeRunning;
     [ObservableProperty] private bool _artNetActive;
     [ObservableProperty] private bool _dmxOutputConnected;
     [ObservableProperty] private double _dmxFps;
@@ -141,43 +149,77 @@ public partial class MainViewModel : ObservableObject, IDisposable
     partial void OnArtNetSubNetChanged(int value) => UpdateUniverseDisplay();
     partial void OnArtNetUniverseChanged(int value) => UpdateUniverseDisplay();
 
-    [RelayCommand]
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(ToggleBridgeCommand))]
+    private bool _isBridgeStarting;
+
+    [RelayCommand(CanExecute = nameof(CanToggleBridge))]
     private async Task ToggleBridgeAsync()
     {
+        if (IsBridgeStarting)
+            return;
+
         if (IsBridgeRunning)
         {
-            await _bridge.StopAsync();
-            IsBridgeRunning = false;
-            StatusText = "Arrêté";
+            IsBridgeStarting = true;
+            StatusText = "Arrêt…";
+            try
+            {
+                await Task.Run(async () => await _bridge.StopAsync().ConfigureAwait(false));
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Échec arrêt : {ex.Message}", nameof(MainViewModel));
+            }
+            finally
+            {
+                IsBridgeRunning = false;
+                IsBridgeStarting = false;
+                StatusText = "Arrêté";
+                SaveSettings();
+            }
             return;
         }
 
-        if (IsBridgeMode && IsOpenDmxSelected && !FtdiDriverAvailable)
+        if (IsBridgeMode && IsOpenDmxSelected && !IsOpenDmxOutputAvailable())
         {
             _logger.Warning(
-                FtdiDriverMessage ?? "FTD2XX.dll absente — passez en mode Monitor ou installez le pilote FTDI.",
+                FtdiDriverMessage ?? "Aucune interface Open DMX détectée — passez en mode Monitor ou branchez l'Enttec USB.",
                 nameof(MainViewModel));
             return;
         }
 
-        PersistSettings();
-        _bridge.Mode = OperationMode;
-
-        _network.SetTargetUniverse(new UniverseId(
-            (byte)Math.Clamp(ArtNetNet, 0, 127),
-            (byte)Math.Clamp(ArtNetSubNet, 0, 15),
-            (byte)Math.Clamp(ArtNetUniverse, 0, 15)));
-
-        if (IsBridgeMode && SelectedOutputDevice is not null)
+        IsBridgeStarting = true;
+        try
         {
-            var output = _outputFactory.Create(SelectedOutputType);
-            await output.ConnectAsync(SelectedOutputDevice);
-        }
+            PersistSettings();
+            FlushPendingLogEntries();
+            _bridge.Mode = OperationMode;
 
-        await _bridge.StartAsync();
-        IsBridgeRunning = true;
-        StatusText = IsMonitorMode ? "Analyse" : "En cours";
+            _network.SetTargetUniverse(new UniverseId(
+                (byte)Math.Clamp(ArtNetNet, 0, 127),
+                (byte)Math.Clamp(ArtNetSubNet, 0, 15),
+                (byte)Math.Clamp(ArtNetUniverse, 0, 15)));
+
+            StatusText = "Démarrage…";
+
+            await Task.Run(async () => await _bridge.StartAsync().ConfigureAwait(false));
+
+            IsBridgeRunning = true;
+            StatusText = IsMonitorMode ? "Analyse" : "En cours";
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Échec démarrage : {ex.Message}", nameof(MainViewModel));
+            StatusText = "Arrêté";
+        }
+        finally
+        {
+            IsBridgeStarting = false;
+        }
     }
+
+    private bool CanToggleBridge() => !IsBridgeStarting;
 
     [RelayCommand]
     private void RefreshAdapters()
@@ -203,7 +245,21 @@ public partial class MainViewModel : ObservableObject, IDisposable
     [RelayCommand]
     private void RefreshOutputDevices()
     {
+        if (IsOpenDmxSelected)
+        {
+            var comPorts = FtdiUsbDiagnostics.FindFtdiComPorts();
+            _ftdiDriverStatus.ResetProbe();
+            if (comPorts.Count == 0)
+                _ftdiDriverStatus.Probe();
+
+            var openDmx = (OpenDmxOutput)_outputFactory.Create("OpenDMX");
+            FtdiDriverAvailable = openDmx.IsDriverAvailable;
+            FtdiDriverMessage = openDmx.DriverUnavailableMessage;
+            UpdateFtdiWarningVisibility();
+        }
+
         OutputDevices.Clear();
+
         var output = _outputFactory.Create(SelectedOutputType);
         foreach (var device in output.EnumerateDevices())
             OutputDevices.Add(device);
@@ -219,10 +275,34 @@ public partial class MainViewModel : ObservableObject, IDisposable
             }
         }
 
+        // Préférer le port série quand D2XX est verrouillé par le pilote VCP.
+        if (SelectedOutputDevice is null && IsOpenDmxSelected)
+        {
+            SelectedOutputDevice = OutputDevices.FirstOrDefault(d =>
+                d.Id.StartsWith("d2xx:", StringComparison.OrdinalIgnoreCase));
+        }
+
         SelectedOutputDevice ??= OutputDevices.Count > 0 ? OutputDevices[0] : null;
-        OutputInfo = !FtdiDriverAvailable && IsOpenDmxSelected
-            ? FtdiDriverMessage ?? "Sortie OpenDMX indisponible"
-            : SelectedOutputDevice?.Description ?? "Aucun périphérique détecté";
+
+        if (!FtdiDriverAvailable && IsOpenDmxSelected)
+            OutputInfo = FtdiDriverMessage ?? "Sortie OpenDMX indisponible";
+        else if (OutputDevices.Count == 0)
+            OutputInfo = _ftdiDriverStatus.GetDetectionHint() ?? "Aucun périphérique DMX détecté";
+        else
+        {
+            var hint = IsOpenDmxSelected ? _ftdiDriverStatus.GetDetectionHint() : null;
+            OutputInfo = hint is not null
+                ? $"{SelectedOutputDevice?.Description} — {hint}"
+                : SelectedOutputDevice?.Description ?? "Aucun périphérique";
+        }
+    }
+
+    private bool IsOpenDmxOutputAvailable()
+    {
+        if (!IsOpenDmxSelected)
+            return true;
+
+        return ((OpenDmxOutput)_outputFactory.Create("OpenDMX")).IsDriverAvailable;
     }
 
     [RelayCommand]
@@ -264,6 +344,8 @@ public partial class MainViewModel : ObservableObject, IDisposable
             LogEntries.Add(entry);
     }
 
+    public void SaveSettings() => PersistSettings();
+
     private void PersistSettings()
     {
         _settings.Update(s =>
@@ -296,9 +378,23 @@ public partial class MainViewModel : ObservableObject, IDisposable
 
     private void UpdateFtdiDriverStatus()
     {
-        _ftdiDriverStatus.Probe();
-        FtdiDriverAvailable = _ftdiDriverStatus.IsAvailable;
-        FtdiDriverMessage = _ftdiDriverStatus.UnavailableMessage;
+        if (FtdiUsbDiagnostics.FindFtdiComPorts().Count > 0)
+            _ftdiDriverStatus.ResetProbe();
+        else
+            _ftdiDriverStatus.Probe();
+
+        if (IsOpenDmxSelected)
+        {
+            var openDmx = (OpenDmxOutput)_outputFactory.Create("OpenDMX");
+            FtdiDriverAvailable = openDmx.IsDriverAvailable;
+            FtdiDriverMessage = openDmx.DriverUnavailableMessage;
+        }
+        else
+        {
+            FtdiDriverAvailable = _ftdiDriverStatus.IsAvailable;
+            FtdiDriverMessage = _ftdiDriverStatus.UnavailableMessage;
+        }
+
         UpdateFtdiWarningVisibility();
     }
 
@@ -307,6 +403,8 @@ public partial class MainViewModel : ObservableObject, IDisposable
 
     private void OnUiTimerTick(object? sender, EventArgs e)
     {
+        FlushPendingLogEntries();
+
         var stats = _bridge.GetStatistics();
         var monitor = _bridge.GetMonitorSnapshot();
 
@@ -333,18 +431,24 @@ public partial class MainViewModel : ObservableObject, IDisposable
                          $"Dernier paquet : {(monitor.LastPacketMs < 0 ? "—" : $"{monitor.LastPacketMs:F0} ms")}";
     }
 
-    private void OnLogEntryAdded(object? sender, LogEntry entry)
+    private void OnLogEntryAdded(object? sender, LogEntry entry) => _pendingLogEntries.Enqueue(entry);
+
+    private void FlushPendingLogEntries()
     {
-        Application.Current.Dispatcher.Invoke(() =>
-        {
-            LogEntries.Add(entry);
-            while (LogEntries.Count > 500)
-                LogEntries.RemoveAt(0);
-        });
+        while (_pendingLogEntries.TryDequeue(out var entry))
+            AppendLogEntry(entry);
+    }
+
+    private void AppendLogEntry(LogEntry entry)
+    {
+        LogEntries.Add(entry);
+        while (LogEntries.Count > 500)
+            LogEntries.RemoveAt(0);
     }
 
     public void Dispose()
     {
+        SaveSettings();
         _uiTimer.Stop();
         _logger.EntryAdded -= OnLogEntryAdded;
     }

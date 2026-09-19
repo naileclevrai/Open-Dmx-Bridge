@@ -158,7 +158,7 @@
 
                         <Border Grid.Row="0" Style="{StaticResource Card}" Margin="0,0,0,12">
                             <UniformGrid Columns="5" Rows="2">
-                                <StackPanel Margin="0,0,12,12">
+                                <StackPanel Margin="0,0,12,14">
                                     <TextBlock Text="Art-Net" Style="{StaticResource StatLabel}"/>
                                     <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
                                         <Ellipse Width="10" Height="10" Margin="0,0,6,0" VerticalAlignment="Center"
@@ -167,19 +167,19 @@
                                                    Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
                                     </StackPanel>
                                 </StackPanel>
-                                <StackPanel Margin="0,0,12,12">
+                                <StackPanel Margin="0,0,12,14">
                                     <TextBlock Text="FPS Art-Net" Style="{StaticResource StatLabel}"/>
                                     <TextBlock Text="{Binding ArtNetFps, StringFormat={}{0:F1}}" Style="{StaticResource StatValue}"/>
                                 </StackPanel>
-                                <StackPanel Margin="0,0,12,12">
+                                <StackPanel Margin="0,0,12,14">
                                     <TextBlock Text="FPS DMX" Style="{StaticResource StatLabel}"/>
                                     <TextBlock Text="{Binding DmxFps, StringFormat={}{0:F1}}" Style="{StaticResource StatValue}"/>
                                 </StackPanel>
-                                <StackPanel Margin="0,0,12,12">
+                                <StackPanel Margin="0,0,12,14">
                                     <TextBlock Text="Dernier paquet" Style="{StaticResource StatLabel}"/>
                                     <TextBlock Text="{Binding LastPacketDisplay}" Style="{StaticResource StatValue}"/>
                                 </StackPanel>
-                                <StackPanel Margin="0,0,0,12">
+                                <StackPanel Margin="0,0,0,14">
                                     <TextBlock Text="Sortie DMX" Style="{StaticResource StatLabel}"/>
                                     <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
                                         <Ellipse Width="10" Height="10" Margin="0,0,6,0" VerticalAlignment="Center"

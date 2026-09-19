@@ -94,8 +94,8 @@ public class DmxChannelMonitor : UserControl
     private void RenderBitmap()
     {
         var pixels = _pixelBuffer;
-        var bg = Color.FromRgb(0xFF, 0xFF, 0xFF);
-        var cell = Color.FromRgb(0xEF, 0xEF, 0xF4);
+        var bg = Color.FromArgb(0x00, 0xFF, 0xFF, 0xFF); // transparent : le verre reste visible
+        var cell = Color.FromArgb(0x2E, 0x1B, 0x2B, 0x4B);
         Fill(pixels, bg);
 
         for (var i = 0; i < ChannelCount; i++)
@@ -106,7 +106,7 @@ public class DmxChannelMonitor : UserControl
             var y0 = Gap + row * (CellHeight + Gap);
             var level = _levels[i] / 255.0;
             var barH = (int)Math.Round(level * CellHeight);
-            var color = Color.FromRgb((byte)(0x00 + level * 0x1A), (byte)(0x7A + level * 0x24), 0xFF); // bleu macOS #007AFF → #1A9EFF
+            var color = Color.FromArgb(0xFF, (byte)(0x0A + level * 0x30), (byte)(0x84 + level * 0x40), 0xFF); // bleu #0A84FF → #3AC4FF
 
             for (var y = y0; y < y0 + CellHeight; y++)
                 for (var x = x0; x < x0 + CellWidth; x++)
@@ -129,7 +129,7 @@ public class DmxChannelMonitor : UserControl
             pixels[i] = color.B;
             pixels[i + 1] = color.G;
             pixels[i + 2] = color.R;
-            pixels[i + 3] = 255;
+            pixels[i + 3] = color.A;
         }
     }
 
@@ -142,6 +142,6 @@ public class DmxChannelMonitor : UserControl
         pixels[i] = color.B;
         pixels[i + 1] = color.G;
         pixels[i + 2] = color.R;
-        pixels[i + 3] = 255;
+        pixels[i + 3] = color.A;
     }
 }

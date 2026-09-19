@@ -332,8 +332,8 @@
                                                 <Button Content="Effacer" Command="{Binding ClearLogsCommand}"/>
                                             </StackPanel>
                                         </Grid>
-                                        <ListBox ItemsSource="{Binding LogEntries}" Background="#FAFAFC" ui:ControlHelper.CornerRadius="8"
-                                                 BorderThickness="1" BorderBrush="{StaticResource CardBorderBrush}"
+                                        <ListBox ItemsSource="{Binding LogEntries}" Background="#80FFFFFF" ui:ControlHelper.CornerRadius="14"
+                                                 BorderThickness="1" BorderBrush="{StaticResource GlassInsetBrush}"
                                                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
                                                  VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
                                             <ListBox.ItemContainerStyle>

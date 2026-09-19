@@ -14,14 +14,17 @@ public sealed class DmxEngine : IDmxEngine
     private readonly ILoggingService _logger;
     private readonly ConcurrentDictionary<UniverseId, UniverseBuffer> _universes = new();
     private readonly byte[] _outputFrame = new byte[UniverseBuffer.SlotCount];
-    private readonly PrecisePeriodicLoop _clock = new(44);
+    private readonly PrecisePeriodicLoop _clock = new(MaxRefreshHz);
 
     private volatile IDmxOutput? _output;
     private CancellationTokenSource? _cts;
     private Thread? _outputThread;
     private volatile bool _isRunning;
 
-    private int _refreshHz = 44;
+    /// <summary>Une trame DMX complète dure ~22,6 ms : au-delà de 40 Hz, les trames se chevauchent.</summary>
+    public const int MaxRefreshHz = 40;
+
+    private int _refreshHz = MaxRefreshHz;
     private long _framesSent;
     private double _currentFps;
     private long _fpsCounter;
@@ -41,7 +44,7 @@ public sealed class DmxEngine : IDmxEngine
         get => _refreshHz;
         set
         {
-            _refreshHz = Math.Clamp(value, 1, 60);
+            _refreshHz = Math.Clamp(value, 1, MaxRefreshHz);
             _clock.SetFrequency(_refreshHz);
             _clock.Reset();
         }

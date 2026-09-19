@@ -16,6 +16,12 @@ public sealed class OpenDmxOutput : IDmxOutput
     private const string D2xxPrefix = "d2xx:";
     private const string ComPrefix = "com:";
 
+    /// <summary>Durée d'émission d'une trame complète : 513 octets × 11 bits à 250 kbauds ≈ 22,6 ms.</summary>
+    private const double FrameTransmitMs = DmxSlots * 11 * 1000.0 / Dmx512Timing.DmxBaudRate;
+
+    /// <summary>Marge de sécurité avant le break suivant (latence USB du FTDI).</summary>
+    private const double FrameGuardMs = 1.5;
+
     private readonly ILoggingService _logger;
     private readonly ISettingsService _settings;
     private readonly object _ioLock = new();
@@ -26,6 +32,7 @@ public sealed class OpenDmxOutput : IDmxOutput
     private DmxOutputDevice? _connectedDevice;
     private long _framesSent;
     private long _timingSampleCounter;
+    private long _lastWriteTimestamp;
     private volatile bool _watchdogRunning;
     private Thread? _watchdogThread;
 
@@ -167,6 +174,8 @@ public sealed class OpenDmxOutput : IDmxOutput
 
             try
             {
+                WaitForPreviousFrame();
+
                 if (_serialPort?.IsOpen == true)
                     TransmitDmx512FrameSerial(_serialPort, _frameBuffer);
                 else if (_d2xxHandle != IntPtr.Zero)
@@ -276,7 +285,7 @@ public sealed class OpenDmxOutput : IDmxOutput
         var mabUs = Math.Max(cfg.MabMicroseconds, (int)Dmx512Timing.MinMabMicroseconds);
         var logDiagnostics = cfg.EnableTimingDiagnostics;
 
-        Check(FtdiNative.FT_SetBaudRate(handle, Dmx512Timing.DmxBaudRate));
+        WaitForTxQueueEmpty(handle);
 
         var timing = Dmx512Timing.MeasureBreakAndMab(
             () => Check(FtdiNative.FT_SetBreakOn(handle)),
@@ -289,10 +298,9 @@ public sealed class OpenDmxOutput : IDmxOutput
 
         uint written = 0;
         Check(FtdiNative.FT_Write(handle, buffer, buffer.Length, ref written));
+        _lastWriteTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
         if (written != buffer.Length)
             throw new InvalidOperationException("Écriture DMX incomplète.");
-
-        Check(FtdiNative.FT_Purge(handle, FtdiNative.PurgeTx));
     }
 
     private void TransmitDmx512FrameSerial(SerialPort port, byte[] buffer)
@@ -331,6 +339,7 @@ public sealed class OpenDmxOutput : IDmxOutput
         }
 
         port.Write(buffer, 0, buffer.Length);
+        _lastWriteTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
     }
 
     private void LogTimingSample(Dmx512Timing.FrameTimingMeasurement timing, double requestedBreak, double requestedMab)
@@ -355,6 +364,44 @@ public sealed class OpenDmxOutput : IDmxOutput
         }
     }
 
+    /// <summary>
+    /// Attend que la trame précédente soit entièrement sortie du boîtier avant d'émettre
+    /// le break suivant. Sans cela, à 44 Hz, le break coupe la trame en cours et la sortie clignote.
+    /// </summary>
+    private void WaitForPreviousFrame()
+    {
+        var last = _lastWriteTimestamp;
+        if (last == 0)
+            return;
+
+        var minSpacingMs = FrameTransmitMs + FrameGuardMs;
+        while (true)
+        {
+            var elapsedMs = (System.Diagnostics.Stopwatch.GetTimestamp() - last) * 1000.0 / System.Diagnostics.Stopwatch.Frequency;
+            var remaining = minSpacingMs - elapsedMs;
+            if (remaining <= 0)
+                return;
+
+            if (remaining > 2.0)
+                Thread.Sleep((int)(remaining - 1.0));
+            else
+                Thread.SpinWait(50);
+        }
+    }
+
+    /// <summary>D2XX : attend (au plus 10 ms) que le tampon d'émission du FTDI soit vide.</summary>
+    private static void WaitForTxQueueEmpty(IntPtr handle)
+    {
+        var deadline = System.Diagnostics.Stopwatch.GetTimestamp() + System.Diagnostics.Stopwatch.Frequency / 100;
+        uint rx = 0, tx = 0, events = 0;
+        while (System.Diagnostics.Stopwatch.GetTimestamp() < deadline)
+        {
+            if (FtdiNative.FT_GetStatus(handle, ref rx, ref tx, ref events) != 0 || tx == 0)
+                return;
+
+            Thread.SpinWait(100);
+        }
+    }
     private static void ConfigureOpenDmx(IntPtr handle)
     {
         Check(FtdiNative.FT_ResetDevice(handle));
@@ -449,6 +496,8 @@ public sealed class OpenDmxOutput : IDmxOutput
 
     private void MarkDisconnected()
     {
+        _lastWriteTimestamp = 0;
+
         if (_d2xxHandle != IntPtr.Zero)
         {
             if (FtdiNative.IsAvailable())

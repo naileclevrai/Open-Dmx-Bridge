@@ -12,7 +12,7 @@ public sealed class AppSettings
     public byte ArtNetSubNet { get; set; }
     public byte ArtNetUniverse { get; set; }
     public bool AutoStartBridge { get; set; }
-    public int DmxRefreshHz { get; set; } = 44;
+    public int DmxRefreshHz { get; set; } = 40;
     public string OutputType { get; set; } = "OpenDMX";
     public string? OutputDeviceId { get; set; }
     public BridgeOperationMode OperationMode { get; set; } = BridgeOperationMode.Bridge;

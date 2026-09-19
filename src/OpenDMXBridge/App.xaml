@@ -17,6 +17,12 @@
             <SolidColorBrush x:Key="AccentBrush" Color="#007AFF"/>
             <SolidColorBrush x:Key="AccentPressedBrush" Color="#0062CC"/>
             <SolidColorBrush x:Key="PageBrush" Color="#ECECEC"/>
+            <!-- Fond de repli si le flou système (Acrylic) est indisponible : dégradé façon fond d'écran -->
+            <LinearGradientBrush x:Key="WallpaperBrush" StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#DCE7FF" Offset="0"/>
+                <GradientStop Color="#F3E6FF" Offset="0.45"/>
+                <GradientStop Color="#DFF6F1" Offset="1"/>
+            </LinearGradientBrush>
             <SolidColorBrush x:Key="CardBrush" Color="#FFFFFF"/>
             <SolidColorBrush x:Key="CardBorderBrush" Color="#D8D8DC"/>
             <SolidColorBrush x:Key="ControlBrush" Color="#FFFFFF"/>

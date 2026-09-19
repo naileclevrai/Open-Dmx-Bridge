@@ -5,8 +5,8 @@
         xmlns:controls="clr-namespace:OpenDMXBridge.Controls"
         xmlns:conv="clr-namespace:OpenDMXBridge.Converters"
         ui:WindowHelper.UseModernWindowStyle="True"
-        ui:TitleBar.Background="{StaticResource PageBrush}"
-        ui:TitleBar.InactiveBackground="{StaticResource PageBrush}"
+        ui:TitleBar.Background="Transparent"
+        ui:TitleBar.InactiveBackground="Transparent"
         ui:TitleBar.Foreground="{StaticResource TextSecondaryBrush}"
         Title="OpenDMX Bridge"
         Height="800"
@@ -18,7 +18,7 @@
         TextOptions.TextRenderingMode="ClearType"
         UseLayoutRounding="True"
         FontSize="13"
-        Background="{StaticResource PageBrush}"
+        Background="{StaticResource WallpaperBrush}"
         WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <conv:BoolToStatusBrushConverter x:Key="StatusBrushConverter"/>

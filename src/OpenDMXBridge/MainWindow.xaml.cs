@@ -2,6 +2,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using System.Windows.Interop;
+using System.Windows.Media;
+using System.Runtime.InteropServices;
 using OpenDMXBridge.Services.Contracts;
 
 namespace OpenDMXBridge;
@@ -13,6 +16,43 @@ public partial class MainWindow : Window
         InitializeComponent();
         ChannelMonitor.DmxEngine = App.Services.GetService(typeof(IDmxEngine)) as IDmxEngine;
         Closing += OnClosing;
+    }
+
+    // --- Flou système « Liquid Glass » (Windows 11 22H2+) ---
+    private const int DwmwaSystemBackdropType = 38;
+    private const int DwmSbtTransientWindow = 3; // Acrylic
+
+    [DllImport("dwmapi.dll")]
+    private static extern int DwmSetWindowAttribute(IntPtr hwnd, int attribute, ref int value, int size);
+
+    protected override void OnSourceInitialized(EventArgs e)
+    {
+        base.OnSourceInitialized(e);
+        TryEnableAcrylicBackdrop();
+    }
+
+    /// <summary>Active le fond Acrylic du système derrière la fenêtre ; sinon garde le dégradé de repli.</summary>
+    private void TryEnableAcrylicBackdrop()
+    {
+        try
+        {
+            if (Environment.OSVersion.Version.Build < 22621)
+                return;
+
+            var hwnd = new WindowInteropHelper(this).Handle;
+            var backdrop = DwmSbtTransientWindow;
+            if (DwmSetWindowAttribute(hwnd, DwmwaSystemBackdropType, ref backdrop, sizeof(int)) != 0)
+                return;
+
+            if (HwndSource.FromHwnd(hwnd) is { CompositionTarget: { } target })
+                target.BackgroundColor = Colors.Transparent;
+
+            Background = Brushes.Transparent;
+        }
+        catch
+        {
+            // Fond dégradé conservé.
+        }
     }
 
     // --- Faders : glissement robuste ---

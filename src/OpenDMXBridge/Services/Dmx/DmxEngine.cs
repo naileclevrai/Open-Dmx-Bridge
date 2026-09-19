@@ -56,6 +56,8 @@ public sealed class DmxEngine : IDmxEngine
         set => _activeUniverse = value;
     }
 
+    public DmxConsoleLayer Console { get; } = new();
+
     public void SetOutput(IDmxOutput output) => _output = output;
 
     public void CopyActiveUniverseSnapshot(Span<byte> destination)
@@ -64,6 +66,8 @@ public sealed class DmxEngine : IDmxEngine
             buffer.CopySnapshot(destination);
         else
             destination.Clear();
+
+        Console.Merge(destination);
     }
 
     public void ApplyArtNetPatch(UniverseId universe, ReadOnlySpan<byte> data, int startChannel = 1)
@@ -133,6 +137,7 @@ public sealed class DmxEngine : IDmxEngine
                 else
                     _outputFrame.AsSpan().Clear();
 
+                Console.Merge(_outputFrame);
                 output.SendFrame(_outputFrame);
                 Interlocked.Increment(ref _framesSent);
                 Interlocked.Increment(ref _fpsCounter);

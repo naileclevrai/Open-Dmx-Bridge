@@ -13,6 +13,9 @@ public interface IDmxEngine : IAsyncDisposable
     double CurrentFps { get; }
     UniverseId ActiveUniverse { get; set; }
 
+    /// <summary>Micro console locale fusionnée dans la trame sortante.</summary>
+    Services.Dmx.DmxConsoleLayer Console { get; }
+
     void CopyActiveUniverseSnapshot(Span<byte> destination);
     void ApplyArtNetPatch(UniverseId universe, ReadOnlySpan<byte> data, int startChannel = 1);
 

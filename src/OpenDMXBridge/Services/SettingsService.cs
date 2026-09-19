@@ -1,5 +1,6 @@
 using System.IO;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using OpenDMXBridge.Models;
 using OpenDMXBridge.Services.Contracts;
 
@@ -7,7 +8,13 @@ namespace OpenDMXBridge.Services;
 
 public sealed class SettingsService : ISettingsService
 {
-    private static readonly JsonSerializerOptions JsonOptions = new() { WriteIndented = true };
+    private static readonly JsonSerializerOptions JsonOptions = new()
+    {
+        WriteIndented = true,
+        // Énumérations écrites en texte lisible ("Dark", "Bridge"…) ; les anciens fichiers avec des nombres restent lus.
+        Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase, allowIntegerValues: true) },
+        PropertyNameCaseInsensitive = true
+    };
     private readonly string _settingsPath;
     private readonly ILoggingService _logger;
     private readonly object _lock = new();
@@ -53,6 +60,8 @@ public sealed class SettingsService : ISettingsService
             {
                 _current = new AppSettings();
                 _logger.Warning($"Impossible de charger les paramètres : {ex.Message}", nameof(SettingsService));
+                try { File.Copy(_settingsPath, _settingsPath + ".bak", overwrite: true); }
+                catch { /* la sauvegarde de secours est optionnelle */ }
             }
         }
     }

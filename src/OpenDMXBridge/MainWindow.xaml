@@ -42,20 +42,12 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                <Border Width="38" Height="38" CornerRadius="12" Margin="0,0,12,0" VerticalAlignment="Center" BorderBrush="#99FFFFFF" BorderThickness="1">
-                    <Border.Background>
-                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                            <GradientStop Color="#7ED7FF" Offset="0"/>
-                            <GradientStop Color="#0A84FF" Offset="0.6"/>
-                            <GradientStop Color="#5E5CE6" Offset="1"/>
-                        </LinearGradientBrush>
-                    </Border.Background>
-                    <Border.Effect>
-                        <DropShadowEffect BlurRadius="14" ShadowDepth="3" Direction="270" Opacity="0.35" Color="#0A84FF"/>
-                    </Border.Effect>
-                    <TextBlock Text="DMX" FontFamily="{StaticResource DisplayFont}" FontWeight="Bold" FontSize="11"
-                               Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                </Border>
+                <Image Source="pack://application:,,,/Assets/app-256.png" Width="44" Height="44" Margin="0,0,10,0"
+                       VerticalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality">
+                    <Image.Effect>
+                        <DropShadowEffect BlurRadius="12" ShadowDepth="3" Direction="270" Opacity="0.28" Color="#0A84FF"/>
+                    </Image.Effect>
+                </Image>
                 <StackPanel VerticalAlignment="Center">
                     <TextBlock Text="OpenDMX Bridge" FontSize="20" FontWeight="SemiBold" FontFamily="{StaticResource DisplayFont}"
                                Foreground="{StaticResource TextPrimaryBrush}"/>

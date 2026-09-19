@@ -286,8 +286,8 @@
                                 </ItemsControl.ItemsPanel>
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
-                                        <Border Margin="3,0" Padding="4,8" CornerRadius="8" Background="#F7F7F9"
-                                                BorderBrush="{StaticResource CardBorderBrush}" BorderThickness="1">
+                                        <Border Margin="3,0" Padding="4,10" CornerRadius="16" Background="#66FFFFFF"
+                                                BorderBrush="{StaticResource GlassInsetBrush}" BorderThickness="1">
                                             <DockPanel>
                                                 <TextBlock DockPanel.Dock="Top" Text="{Binding Channel}" FontWeight="SemiBold"
                                                            HorizontalAlignment="Center" Foreground="{StaticResource TextPrimaryBrush}"/>
@@ -295,7 +295,7 @@
                                                            HorizontalAlignment="Center" Margin="0,2,0,6"/>
                                                 <StackPanel DockPanel.Dock="Bottom" Margin="0,6,0,0">
                                                     <Button Content="Flash" ToolTip="Canal à 100 % tant que le bouton est maintenu"
-                                                            HorizontalAlignment="Stretch" Padding="0,3" FontSize="11"
+                                                            HorizontalAlignment="Stretch" Padding="0,4" FontSize="11"
                                                             PreviewMouseLeftButtonDown="OnFlashDown"
                                                             PreviewMouseLeftButtonUp="OnFlashUp"
                                                             MouseLeave="OnFlashUp"/>

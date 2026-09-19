@@ -45,7 +45,8 @@ public sealed class ThemeService : IThemeService, IDisposable
         Preference = preference;
         _settings.Update(s => s.Theme = preference);
         _settings.Save();
-        ApplyEffective(Resolve(preference), log: true);
+        if (!ApplyEffective(Resolve(preference), log: true))
+            ThemeChanged?.Invoke(this, EventArgs.Empty); // préférence changée, rendu identique : l'UI doit quand même se mettre à jour
     }
 
     public void Cycle() => Apply(Preference switch
@@ -76,16 +77,17 @@ public sealed class ThemeService : IThemeService, IDisposable
         }
     }
 
-    private void ApplyEffective(AppTheme effective, bool log, bool force = false)
+    /// <returns>true si le thème effectif a changé (et que ThemeChanged a été levé).</returns>
+    private bool ApplyEffective(AppTheme effective, bool log, bool force = false)
     {
         if (!force && effective == Effective)
-            return;
+            return false;
 
         Effective = effective;
 
         var app = Application.Current;
         if (app is null)
-            return;
+            return false;
 
         var merged = app.Resources.MergedDictionaries;
         var target = new Uri(effective == AppTheme.Dark ? DarkSource : LightSource, UriKind.Relative);
@@ -107,6 +109,7 @@ public sealed class ThemeService : IThemeService, IDisposable
             _logger.Info($"Apparence : {Describe(Preference)} → {(IsDark ? "sombre" : "claire")}.", nameof(ThemeService));
 
         ThemeChanged?.Invoke(this, EventArgs.Empty);
+        return true;
     }
 
     private void OnUserPreferenceChanged(object sender, UserPreferenceChangedEventArgs e)

@@ -179,9 +179,7 @@
                             </Border>
                             <ControlTemplate.Triggers>
                                 <Trigger Property="IsSelected" Value="True">
-                                    <Setter TargetName="Bd" Property="Background" Value="White"/>
                                     <Setter TargetName="Content" Property="TextElement.FontWeight" Value="SemiBold"/>
-                                    <Setter TargetName="Bd" Property="BorderBrush" Value="#33000000"/>
                                 </Trigger>
                                 <MultiTrigger>
                                     <MultiTrigger.Conditions>
@@ -211,7 +209,18 @@
                                 </Grid.RowDefinitions>
                                 <Border Grid.Row="0" Background="#1A1B2B4B" BorderThickness="0" CornerRadius="16" Padding="3" Height="32"
                                         HorizontalAlignment="Center" Margin="0,0,0,14">
-                                    <StackPanel IsItemsHost="True" Orientation="Horizontal"/>
+                                    <Grid>
+                                        <!-- Indicateur blanc qui glisse sous le segment actif (animé en code-behind) -->
+                                        <Canvas>
+                                            <Border x:Name="PART_Indicator" Height="26" Width="0" CornerRadius="13" Background="White"
+                                                    BorderBrush="#33000000" BorderThickness="1" Canvas.Left="0" Canvas.Top="0">
+                                                <Border.Effect>
+                                                    <DropShadowEffect BlurRadius="6" ShadowDepth="1" Direction="270" Opacity="0.12" Color="#1B2B4B"/>
+                                                </Border.Effect>
+                                            </Border>
+                                        </Canvas>
+                                        <StackPanel IsItemsHost="True" Orientation="Horizontal"/>
+                                    </Grid>
                                 </Border>
                                 <ContentPresenter Grid.Row="1" ContentSource="SelectedContent"/>
                             </Grid>

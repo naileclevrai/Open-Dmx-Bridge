@@ -4,6 +4,8 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
+using System.Windows.Threading;
 using System.Runtime.InteropServices;
 using OpenDMXBridge.Services.Contracts;
 
@@ -53,6 +55,40 @@ public partial class MainWindow : Window
         {
             // Fond dégradé conservé.
         }
+    }
+
+    // --- Sélecteur segmenté : indicateur qui glisse sous l'onglet actif ---
+    private static readonly IEasingFunction TabEase = new CubicEase { EasingMode = EasingMode.EaseOut };
+
+    private void OnTabsLoaded(object sender, RoutedEventArgs e) => MoveTabIndicator(animate: false);
+
+    private void OnTabsSizeChanged(object sender, SizeChangedEventArgs e) => MoveTabIndicator(animate: false);
+
+    private void OnTabsSelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (!ReferenceEquals(e.OriginalSource, MainTabs))
+            return;
+
+        MoveTabIndicator(animate: true);
+    }
+
+    private void MoveTabIndicator(bool animate)
+    {
+        if (MainTabs.SelectedIndex < 0 || MainTabs.Template?.FindName("PART_Indicator", MainTabs) is not Border indicator)
+            return;
+
+        if (MainTabs.ItemContainerGenerator.ContainerFromIndex(MainTabs.SelectedIndex) is not TabItem item
+            || item.ActualWidth <= 0 || indicator.Parent is not UIElement canvas)
+        {
+            Dispatcher.BeginInvoke(() => MoveTabIndicator(animate), DispatcherPriority.Loaded);
+            return;
+        }
+
+        var target = item.TranslatePoint(new Point(0, 0), canvas);
+        var duration = animate ? TimeSpan.FromMilliseconds(280) : TimeSpan.Zero;
+        indicator.Height = item.ActualHeight;
+        indicator.BeginAnimation(Canvas.LeftProperty, new DoubleAnimation(target.X, duration) { EasingFunction = TabEase });
+        indicator.BeginAnimation(WidthProperty, new DoubleAnimation(item.ActualWidth, duration) { EasingFunction = TabEase });
     }
 
     // --- Faders : glissement robuste ---

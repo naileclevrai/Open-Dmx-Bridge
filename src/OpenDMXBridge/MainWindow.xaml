@@ -159,7 +159,8 @@
             <GridSplitter Grid.Column="1" Width="12" HorizontalAlignment="Stretch" Background="Transparent"/>
 
             <!-- Supervision / Journal -->
-            <TabControl Grid.Column="2" Style="{StaticResource MacSegmentedControl}">
+            <TabControl x:Name="MainTabs" Grid.Column="2" Style="{StaticResource MacSegmentedControl}"
+                        Loaded="OnTabsLoaded" SelectionChanged="OnTabsSelectionChanged" SizeChanged="OnTabsSizeChanged">
                 <TabItem Header="Supervision">
                     <Grid>
                         <Grid.RowDefinitions>

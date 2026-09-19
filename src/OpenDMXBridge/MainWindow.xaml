@@ -36,7 +36,7 @@
         </Grid.RowDefinitions>
 
         <!-- En-tête façon barre de titre macOS -->
-        <Grid Grid.Row="0" Margin="0,0,0,16">
+        <Grid Grid.Row="0" Height="44" Margin="0,0,0,16">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>

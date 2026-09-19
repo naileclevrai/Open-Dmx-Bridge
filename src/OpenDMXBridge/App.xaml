@@ -246,7 +246,7 @@
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
                                 <Border Grid.Row="0" Background="#1A1B2B4B" BorderThickness="0" CornerRadius="16" Padding="3" Height="32"
-                                        HorizontalAlignment="Center" Margin="0,0,0,14">
+                                        HorizontalAlignment="Center" Margin="0,-54,0,22">
                                     <Grid>
                                         <!-- Indicateur blanc qui glisse sous le segment actif (animé en code-behind) -->
                                         <Canvas>

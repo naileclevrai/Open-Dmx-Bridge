@@ -226,6 +226,88 @@
                 <Setter Property="BorderBrush" Value="{StaticResource ControlBorderBrush}"/>
             </Style>
 
+            <!-- Slider façon macOS : piste fine, bouton blanc rond ombré -->
+            <Style x:Key="MacSliderThumb" TargetType="Thumb">
+                <Setter Property="Width" Value="20"/>
+                <Setter Property="Height" Value="20"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Thumb">
+                            <Grid>
+                                <Ellipse Fill="White" Stroke="#C9C9CE" StrokeThickness="0.75">
+                                    <Ellipse.Effect>
+                                        <DropShadowEffect BlurRadius="4" ShadowDepth="1" Direction="270" Opacity="0.25" Color="Black"/>
+                                    </Ellipse.Effect>
+                                </Ellipse>
+                            </Grid>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsDragging" Value="True">
+                                    <Setter Property="Cursor" Value="Arrow"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="MacSliderRepeat" TargetType="RepeatButton">
+                <Setter Property="IsTabStop" Value="False"/>
+                <Setter Property="Focusable" Value="False"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="RepeatButton">
+                            <Border Background="Transparent"/>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style TargetType="Slider">
+                <Setter Property="Foreground" Value="{StaticResource AccentBrush}"/>
+                <Setter Property="Background" Value="{StaticResource SeparatorBrush}"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Slider">
+                            <Grid>
+                                <Border x:Name="TrackBackground" Height="4" CornerRadius="2" Background="{TemplateBinding Background}"
+                                        VerticalAlignment="Center" Margin="8,0"/>
+                                <Track x:Name="PART_Track">
+                                    <Track.DecreaseRepeatButton>
+                                        <RepeatButton Style="{StaticResource MacSliderRepeat}" Command="Slider.DecreaseLarge"/>
+                                    </Track.DecreaseRepeatButton>
+                                    <Track.IncreaseRepeatButton>
+                                        <RepeatButton Style="{StaticResource MacSliderRepeat}" Command="Slider.IncreaseLarge"/>
+                                    </Track.IncreaseRepeatButton>
+                                    <Track.Thumb>
+                                        <Thumb Style="{StaticResource MacSliderThumb}"/>
+                                    </Track.Thumb>
+                                </Track>
+                            </Grid>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="Orientation" Value="Vertical">
+                                    <Setter TargetName="TrackBackground" Property="Height" Value="Auto"/>
+                                    <Setter TargetName="TrackBackground" Property="Width" Value="4"/>
+                                    <Setter TargetName="TrackBackground" Property="VerticalAlignment" Value="Stretch"/>
+                                    <Setter TargetName="TrackBackground" Property="HorizontalAlignment" Value="Center"/>
+                                    <Setter TargetName="TrackBackground" Property="Margin" Value="0,8"/>
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter TargetName="TrackBackground" Property="Opacity" Value="0.5"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Style.Triggers>
+                    <Trigger Property="Orientation" Value="Vertical">
+                        <Setter Property="MinWidth" Value="24"/>
+                    </Trigger>
+                    <Trigger Property="Orientation" Value="Horizontal">
+                        <Setter Property="MinHeight" Value="24"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+
             <Style x:Key="Card" TargetType="Border">
                 <Setter Property="Background" Value="{StaticResource CardBrush}"/>
                 <Setter Property="BorderBrush" Value="{StaticResource CardBorderBrush}"/>

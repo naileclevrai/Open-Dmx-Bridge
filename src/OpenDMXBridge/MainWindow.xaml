@@ -18,7 +18,7 @@
         WindowStartupLocation="CenterScreen">
     <WindowChrome.WindowChrome>
         <!-- Chrome natif : Windows dessine un seul jeu de boutons de fenêtre sur le verre -->
-        <WindowChrome GlassFrameThickness="-1" CaptionHeight="52" CornerRadius="0" ResizeBorderThickness="6" UseAeroCaptionButtons="True"/>
+        <WindowChrome GlassFrameThickness="-1" CaptionHeight="34" CornerRadius="0" ResizeBorderThickness="6" UseAeroCaptionButtons="True"/>
     </WindowChrome.WindowChrome>
     <Window.Resources>
         <conv:BoolToStatusBrushConverter x:Key="StatusBrushConverter"/>
@@ -28,7 +28,7 @@
         <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
     </Window.Resources>
 
-    <Grid Margin="22">
+    <Grid x:Name="RootGrid" Margin="22,38,22,22">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -36,7 +36,7 @@
         </Grid.RowDefinitions>
 
         <!-- En-tête façon barre de titre macOS -->
-        <Grid Grid.Row="0" Margin="0,8,0,16">
+        <Grid Grid.Row="0" Margin="0,0,0,16">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
@@ -71,8 +71,8 @@
                     </StackPanel>
                 </Border>
             </StackPanel>
-            <Button Grid.Column="1" Style="{StaticResource MacPrimaryButton}" WindowChrome.IsHitTestVisibleInChrome="True"
-                    Margin="0,0,150,0" MinWidth="128" Height="32" VerticalAlignment="Center" FontSize="13"
+            <Button Grid.Column="1" Style="{StaticResource MacPrimaryButton}"
+                    MinWidth="128" Height="32" VerticalAlignment="Center" FontSize="13"
                     Command="{Binding ToggleBridgeCommand}"
                     Content="{Binding IsBridgeRunning, Converter={StaticResource BridgeToggleTextConverter}}"/>
         </Grid>

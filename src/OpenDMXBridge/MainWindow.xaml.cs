@@ -18,6 +18,14 @@ public partial class MainWindow : Window
         InitializeComponent();
         ChannelMonitor.DmxEngine = App.Services.GetService(typeof(IDmxEngine)) as IDmxEngine;
         Closing += OnClosing;
+        StateChanged += (_, _) => ApplyMaximizedPadding();
+    }
+
+    /// <summary>Maximisée, une fenêtre à WindowChrome déborde de l'écran de la bordure de redimensionnement : on compense.</summary>
+    private void ApplyMaximizedPadding()
+    {
+        var extra = WindowState == WindowState.Maximized ? 7.0 : 0.0;
+        RootGrid.Margin = new Thickness(22 + extra, 38 + extra, 22 + extra, 22 + extra);
     }
 
     // --- Flou système « Liquid Glass » (Windows 11 22H2+) ---

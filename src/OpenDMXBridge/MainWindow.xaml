@@ -32,31 +32,46 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- En-tête -->
-        <Grid Grid.Row="0" Margin="0,0,0,12">
+        <!-- En-tête façon barre de titre macOS -->
+        <Grid Grid.Row="0" Margin="0,0,0,16">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                <TextBlock Text="OpenDMX Bridge" FontSize="24" FontWeight="SemiBold" FontFamily="{StaticResource DisplayFont}"
-                           Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
-                <Border Margin="14,0,0,0" VerticalAlignment="Center" CornerRadius="10" Padding="10,3"
-                        Background="#E9E9E9">
+                <Border Width="34" Height="34" CornerRadius="9" Margin="0,0,12,0" VerticalAlignment="Center">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Color="#5AC8FA" Offset="0"/>
+                            <GradientStop Color="#007AFF" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Border.Background>
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="6" ShadowDepth="1" Direction="270" Opacity="0.2" Color="#004A99"/>
+                    </Border.Effect>
+                    <TextBlock Text="DMX" FontFamily="{StaticResource DisplayFont}" FontWeight="Bold" FontSize="11"
+                               Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Border>
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="OpenDMX Bridge" FontSize="20" FontWeight="SemiBold" FontFamily="{StaticResource DisplayFont}"
+                               Foreground="{StaticResource TextPrimaryBrush}"/>
+                    <TextBlock Text="Art-Net vers Open DMX USB" FontSize="11" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,1,0,0"/>
+                </StackPanel>
+                <Border Margin="16,0,0,0" VerticalAlignment="Center" CornerRadius="11" Padding="10,3"
+                        Background="White" BorderBrush="{StaticResource CardBorderBrush}" BorderThickness="1">
                     <StackPanel Orientation="Horizontal">
                         <Ellipse Width="8" Height="8" Margin="0,0,6,0" VerticalAlignment="Center"
                                  Fill="{Binding IsBridgeRunning, Converter={StaticResource StatusBrushConverter}}"/>
-                        <TextBlock Text="{Binding StatusText}" FontSize="12"
+                        <TextBlock Text="{Binding StatusText}" FontSize="11" FontWeight="Medium"
                                    Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Border>
             </StackPanel>
             <Button Grid.Column="1" Style="{StaticResource MacPrimaryButton}"
-                    MinWidth="120" Height="30"
+                    MinWidth="120" Height="30" VerticalAlignment="Center"
                     Command="{Binding ToggleBridgeCommand}"
                     Content="{Binding IsBridgeRunning, Converter={StaticResource BridgeToggleTextConverter}}"/>
         </Grid>
-
         <!-- Alerte FTDI -->
         <Border Grid.Row="1"
                 Background="{StaticResource WarnBgBrush}"

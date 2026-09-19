@@ -1,4 +1,4 @@
-﻿using System.Windows;
+using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using OpenDMXBridge.Services;
 using OpenDMXBridge.Services.ArtNet;
@@ -65,6 +65,7 @@ public partial class App : Application
         services.AddSingleton<IDmxEngine, DmxEngine>();
         services.AddSingleton<INetworkService, ArtNetNetworkService>();
         services.AddSingleton<IBridgeOrchestrator, BridgeOrchestrator>();
+        services.AddSingleton<ConsoleViewModel>();
         services.AddSingleton<MainViewModel>();
     }
 

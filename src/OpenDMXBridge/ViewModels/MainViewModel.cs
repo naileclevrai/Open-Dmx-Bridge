@@ -31,7 +31,8 @@ public partial class MainViewModel : ObservableObject, IDisposable
         IDmxOutputFactory outputFactory,
         IBridgeOrchestrator bridge,
         ILoggingService logger,
-        IFtdiDriverStatus ftdiDriverStatus)
+        IFtdiDriverStatus ftdiDriverStatus,
+        ConsoleViewModel console)
     {
         _settings = settings;
         _network = network;
@@ -40,6 +41,7 @@ public partial class MainViewModel : ObservableObject, IDisposable
         _bridge = bridge;
         _logger = logger;
         _ftdiDriverStatus = ftdiDriverStatus;
+        Console = console;
 
         LogEntries = new ObservableCollection<LogEntry>();
         NetworkAdapters = new ObservableCollection<NetworkAdapterInfo>();
@@ -80,6 +82,7 @@ public partial class MainViewModel : ObservableObject, IDisposable
         UpdateFtdiDriverStatus();
     }
 
+    public ConsoleViewModel Console { get; }
     public ObservableCollection<LogEntry> LogEntries { get; }
     public ObservableCollection<NetworkAdapterInfo> NetworkAdapters { get; }
     public ObservableCollection<string> OutputTypes { get; }
@@ -404,6 +407,7 @@ public partial class MainViewModel : ObservableObject, IDisposable
     private void OnUiTimerTick(object? sender, EventArgs e)
     {
         FlushPendingLogEntries();
+        Console.RefreshSummary();
 
         var stats = _bridge.GetStatistics();
         var monitor = _bridge.GetMonitorSnapshot();

@@ -102,13 +102,13 @@
                     <Border Style="{StaticResource Separator}"/>
                     <StackPanel>
                             <TextBlock Text="Réseau" Style="{StaticResource SectionTitle}"/>
-                            <TextBlock Text="Carte réseau" Style="{StaticResource FieldLabel}" Margin="0,0,0,4"/>
+                            <TextBlock Text="Carte réseau" Style="{StaticResource FieldLabel}"/>
                             <ComboBox HorizontalAlignment="Stretch"
                                       ItemsSource="{Binding NetworkAdapters}"
                                       SelectedItem="{Binding SelectedAdapter}"
                                       DisplayMemberPath="DisplayName"/>
                             <Button Content="Actualiser les cartes" Command="{Binding RefreshAdaptersCommand}"
-                                    HorizontalAlignment="Left" Margin="0,8,0,0"/>
+                                    HorizontalAlignment="Left" Margin="0,10,0,0"/>
                             <TextBlock Text="Univers Art-Net (Net · SubNet · Universe)" Style="{StaticResource FieldLabel}"/>
                             <Grid>
                                 <Grid.ColumnDefinitions>
@@ -127,7 +127,7 @@
                     <Border Style="{StaticResource Separator}"/>
                     <StackPanel IsEnabled="{Binding IsBridgeMode}">
                             <TextBlock Text="Sortie DMX" Style="{StaticResource SectionTitle}"/>
-                            <TextBlock Text="Type d'interface" Style="{StaticResource FieldLabel}" Margin="0,0,0,4"/>
+                            <TextBlock Text="Type d'interface" Style="{StaticResource FieldLabel}"/>
                             <ComboBox HorizontalAlignment="Stretch"
                                       ItemsSource="{Binding OutputTypes}"
                                       SelectedItem="{Binding SelectedOutputType}"/>
@@ -137,7 +137,7 @@
                                       SelectedItem="{Binding SelectedOutputDevice}"
                                       DisplayMemberPath="Description"/>
                             <Button Content="Détecter les interfaces" Command="{Binding RefreshOutputDevicesCommand}"
-                                    HorizontalAlignment="Left" Margin="0,8,0,0"/>
+                                    HorizontalAlignment="Left" Margin="0,10,0,0"/>
                             <TextBlock Style="{StaticResource Hint}" Text="{Binding OutputInfo}"/>
                     </StackPanel>
 

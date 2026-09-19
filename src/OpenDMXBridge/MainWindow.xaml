@@ -314,41 +314,45 @@
                     </Grid>
                 </TabItem>
                 <TabItem Header="Journal">
-                    <Border Style="{StaticResource Card}" Padding="16,12">
+                    <Border Style="{StaticResource Card}">
                         <DockPanel>
-                                        <Grid DockPanel.Dock="Top" Margin="0,0,0,8">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="Auto"/>
-                                            </Grid.ColumnDefinitions>
-                                            <TextBlock Text="Messages de l'application" Style="{StaticResource Hint}" Margin="0" VerticalAlignment="Center"/>
-                                            <StackPanel Grid.Column="1" Orientation="Horizontal">
-                                                <ComboBox Width="120" Margin="0,0,8,0"
-                                                          ItemsSource="{Binding LogLevelOptions}"
-                                                          SelectedItem="{Binding SelectedLogLevel}"
-                                                          DisplayMemberPath="Label"/>
-                                                <Button Content="Exporter" Command="{Binding ExportLogsCommand}" Margin="0,0,8,0"/>
-                                                <Button Content="Effacer" Command="{Binding ClearLogsCommand}"/>
-                                            </StackPanel>
-                                        </Grid>
-                                        <ListBox ItemsSource="{Binding LogEntries}" Background="#80FFFFFF" ui:ControlHelper.CornerRadius="14"
-                                                 BorderThickness="1" BorderBrush="{StaticResource GlassInsetBrush}"
-                                                 ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                                                 VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
-                                            <ListBox.ItemContainerStyle>
-                                                <Style TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
-                                                    <Setter Property="Padding" Value="8,1"/>
-                                                    <Setter Property="MinHeight" Value="0"/>
-                                                </Style>
-                                            </ListBox.ItemContainerStyle>
-                                            <ListBox.ItemTemplate>
-                                                <DataTemplate>
-                                                    <TextBlock Text="{Binding}" FontFamily="{StaticResource MonoFont}" FontSize="12"
-                                                               Foreground="{Binding Level, Converter={StaticResource LogLevelBrushConverter}}"/>
-                                                </DataTemplate>
-                                            </ListBox.ItemTemplate>
-                                        </ListBox>
-                                    </DockPanel>
+                            <Grid DockPanel.Dock="Top" Margin="0,0,0,12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock Text="Journal" Style="{StaticResource SectionTitle}" Margin="0"/>
+                                    <TextBlock Text="Messages de l'application" Style="{StaticResource Hint}" Margin="0,2,0,0"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                    <ComboBox Width="120" Margin="0,0,8,0"
+                                              ItemsSource="{Binding LogLevelOptions}"
+                                              SelectedItem="{Binding SelectedLogLevel}"
+                                              DisplayMemberPath="Label"/>
+                                    <Button Content="Exporter" Command="{Binding ExportLogsCommand}" Margin="0,0,8,0"/>
+                                    <Button Content="Effacer" Command="{Binding ClearLogsCommand}"/>
+                                </StackPanel>
+                            </Grid>
+                            <Border Background="#80FFFFFF" CornerRadius="14" BorderBrush="{StaticResource GlassInsetBrush}" BorderThickness="1" Padding="6">
+                                <ListBox ItemsSource="{Binding LogEntries}" Background="Transparent" BorderThickness="0"
+                                         ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                         VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
+                                    <ListBox.ItemContainerStyle>
+                                        <Style TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+                                            <Setter Property="Padding" Value="10,2"/>
+                                            <Setter Property="MinHeight" Value="0"/>
+                                        </Style>
+                                    </ListBox.ItemContainerStyle>
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding}" FontFamily="{StaticResource MonoFont}" FontSize="12"
+                                                       Foreground="{Binding Level, Converter={StaticResource LogLevelBrushConverter}}"/>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </Border>
+                        </DockPanel>
                     </Border>
                 </TabItem>
                 <TabItem Header="Diagnostic">

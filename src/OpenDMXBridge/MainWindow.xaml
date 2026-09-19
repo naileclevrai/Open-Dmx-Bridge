@@ -42,15 +42,16 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                <Border Width="34" Height="34" CornerRadius="9" Margin="0,0,12,0" VerticalAlignment="Center">
+                <Border Width="38" Height="38" CornerRadius="12" Margin="0,0,12,0" VerticalAlignment="Center" BorderBrush="#99FFFFFF" BorderThickness="1">
                     <Border.Background>
                         <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                            <GradientStop Color="#5AC8FA" Offset="0"/>
-                            <GradientStop Color="#007AFF" Offset="1"/>
+                            <GradientStop Color="#7ED7FF" Offset="0"/>
+                            <GradientStop Color="#0A84FF" Offset="0.6"/>
+                            <GradientStop Color="#5E5CE6" Offset="1"/>
                         </LinearGradientBrush>
                     </Border.Background>
                     <Border.Effect>
-                        <DropShadowEffect BlurRadius="6" ShadowDepth="1" Direction="270" Opacity="0.2" Color="#004A99"/>
+                        <DropShadowEffect BlurRadius="14" ShadowDepth="3" Direction="270" Opacity="0.35" Color="#0A84FF"/>
                     </Border.Effect>
                     <TextBlock Text="DMX" FontFamily="{StaticResource DisplayFont}" FontWeight="Bold" FontSize="11"
                                Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -60,8 +61,8 @@
                                Foreground="{StaticResource TextPrimaryBrush}"/>
                     <TextBlock Text="Art-Net vers Open DMX USB" FontSize="11" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,1,0,0"/>
                 </StackPanel>
-                <Border Margin="16,0,0,0" VerticalAlignment="Center" CornerRadius="11" Padding="10,3"
-                        Background="White" BorderBrush="{StaticResource CardBorderBrush}" BorderThickness="1">
+                <Border Margin="16,0,0,0" VerticalAlignment="Center" CornerRadius="999" Padding="12,4"
+                        Background="#B3FFFFFF" BorderBrush="{StaticResource GlassBorderBrush}" BorderThickness="1">
                     <StackPanel Orientation="Horizontal">
                         <Ellipse Width="8" Height="8" Margin="0,0,6,0" VerticalAlignment="Center"
                                  Fill="{Binding IsBridgeRunning, Converter={StaticResource StatusBrushConverter}}"/>
@@ -71,7 +72,7 @@
                 </Border>
             </StackPanel>
             <Button Grid.Column="1" Style="{StaticResource MacPrimaryButton}"
-                    MinWidth="120" Height="30" VerticalAlignment="Center"
+                    MinWidth="128" Height="34" VerticalAlignment="Center" FontSize="13"
                     Command="{Binding ToggleBridgeCommand}"
                     Content="{Binding IsBridgeRunning, Converter={StaticResource BridgeToggleTextConverter}}"/>
         </Grid>

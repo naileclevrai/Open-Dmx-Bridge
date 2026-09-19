@@ -70,6 +70,31 @@ public partial class MainWindow : Window
             return;
 
         MoveTabIndicator(animate: true);
+        SlideTabContent();
+    }
+
+    private int _lastTabIndex = -1;
+
+    /// <summary>Le contenu du nouvel onglet glisse depuis la droite (ou la gauche) en fondu.</summary>
+    private void SlideTabContent()
+    {
+        var index = MainTabs.SelectedIndex;
+        var direction = _lastTabIndex < 0 || index >= _lastTabIndex ? 1 : -1;
+        _lastTabIndex = index;
+
+        if (MainTabs.Template?.FindName("PART_SelectedContentHost", MainTabs) is not ContentPresenter host)
+            return;
+
+        if (host.RenderTransform is not TranslateTransform slide)
+        {
+            slide = new TranslateTransform();
+            host.RenderTransform = slide;
+        }
+
+        slide.BeginAnimation(TranslateTransform.XProperty,
+            new DoubleAnimation(36 * direction, 0, TimeSpan.FromMilliseconds(320)) { EasingFunction = TabEase });
+        host.BeginAnimation(OpacityProperty,
+            new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(260)) { EasingFunction = TabEase });
     }
 
     private void MoveTabIndicator(bool animate)

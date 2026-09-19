@@ -222,7 +222,11 @@
                                         <StackPanel IsItemsHost="True" Orientation="Horizontal"/>
                                     </Grid>
                                 </Border>
-                                <ContentPresenter Grid.Row="1" ContentSource="SelectedContent"/>
+                                <ContentPresenter x:Name="PART_SelectedContentHost" Grid.Row="1" ContentSource="SelectedContent">
+                                    <ContentPresenter.RenderTransform>
+                                        <TranslateTransform/>
+                                    </ContentPresenter.RenderTransform>
+                                </ContentPresenter>
                             </Grid>
                         </ControlTemplate>
                     </Setter.Value>

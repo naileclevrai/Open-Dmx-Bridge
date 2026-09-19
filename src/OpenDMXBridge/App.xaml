@@ -43,12 +43,12 @@
             <!-- Carte façon macOS : coins 10 px, bord fin, ombre très douce -->
             <!-- Boutons façon macOS -->
             <Style x:Key="MacButton" TargetType="Button">
-                <Setter Property="Background" Value="{StaticResource ControlBrush}"/>
+                <Setter Property="Background" Value="#B3FFFFFF"/>
                 <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
-                <Setter Property="BorderBrush" Value="{StaticResource ControlBorderBrush}"/>
+                <Setter Property="BorderBrush" Value="{StaticResource GlassBorderBrush}"/>
                 <Setter Property="BorderThickness" Value="1"/>
-                <Setter Property="Padding" Value="12,0"/>
-                <Setter Property="MinHeight" Value="26"/>
+                <Setter Property="Padding" Value="14,0"/>
+                <Setter Property="MinHeight" Value="28"/>
                 <Setter Property="MinWidth" Value="26"/>
                 <Setter Property="FontSize" Value="12"/>
                 <Setter Property="Cursor" Value="Arrow"/>
@@ -58,10 +58,10 @@
                     <Setter.Value>
                         <ControlTemplate TargetType="Button">
                             <Border x:Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
-                                    BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="6" Padding="{TemplateBinding Padding}"
+                                    BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="999" Padding="{TemplateBinding Padding}"
                                     SnapsToDevicePixels="True">
                                 <Border.Effect>
-                                    <DropShadowEffect BlurRadius="2" ShadowDepth="0.5" Direction="270" Opacity="0.12" Color="Black"/>
+                                    <DropShadowEffect BlurRadius="6" ShadowDepth="1" Direction="270" Opacity="0.10" Color="#1B2B4B"/>
                                 </Border.Effect>
                                 <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                                   VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
@@ -69,14 +69,14 @@
                             </Border>
                             <ControlTemplate.Triggers>
                                 <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter TargetName="Bd" Property="Background" Value="{StaticResource ControlHoverBrush}"/>
+                                    <Setter TargetName="Bd" Property="Background" Value="#E6FFFFFF"/>
                                 </Trigger>
                                 <Trigger Property="IsPressed" Value="True">
-                                    <Setter TargetName="Bd" Property="Background" Value="{StaticResource ControlPressedBrush}"/>
+                                    <Setter TargetName="Bd" Property="Background" Value="#80FFFFFF"/>
                                 </Trigger>
                                 <Trigger Property="IsEnabled" Value="False">
                                     <Setter Property="Foreground" Value="{StaticResource TextTertiaryBrush}"/>
-                                    <Setter TargetName="Bd" Property="Background" Value="#F7F7F7"/>
+                                    <Setter TargetName="Bd" Property="Background" Value="#59FFFFFF"/>
                                 </Trigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
@@ -87,12 +87,12 @@
             <Style x:Key="MacPrimaryButton" TargetType="Button" BasedOn="{StaticResource MacButton}">
                 <Setter Property="Foreground" Value="White"/>
                 <Setter Property="FontWeight" Value="SemiBold"/>
-                <Setter Property="BorderBrush" Value="#0A6FE0"/>
+                <Setter Property="BorderBrush" Value="#80FFFFFF"/>
                 <Setter Property="Background">
                     <Setter.Value>
                         <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                            <GradientStop Color="#2A8CFF" Offset="0"/>
-                            <GradientStop Color="#007AFF" Offset="1"/>
+                            <GradientStop Color="#5AAAFF" Offset="0"/>
+                            <GradientStop Color="#0A84FF" Offset="1"/>
                         </LinearGradientBrush>
                     </Setter.Value>
                 </Setter>
@@ -100,9 +100,9 @@
                     <Setter.Value>
                         <ControlTemplate TargetType="Button">
                             <Border x:Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
-                                    BorderThickness="1" CornerRadius="6" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
+                                    BorderThickness="1" CornerRadius="999" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
                                 <Border.Effect>
-                                    <DropShadowEffect BlurRadius="3" ShadowDepth="0.5" Direction="270" Opacity="0.18" Color="#004A99"/>
+                                    <DropShadowEffect BlurRadius="14" ShadowDepth="3" Direction="270" Opacity="0.35" Color="#007AFF"/>
                                 </Border.Effect>
                                 <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Border>
@@ -121,22 +121,22 @@
             </Style>
 
             <Style x:Key="MacToggleButton" TargetType="ToggleButton">
-                <Setter Property="Background" Value="{StaticResource ControlBrush}"/>
+                <Setter Property="Background" Value="#B3FFFFFF"/>
                 <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
-                <Setter Property="BorderBrush" Value="{StaticResource ControlBorderBrush}"/>
-                <Setter Property="MinHeight" Value="26"/>
-                <Setter Property="Padding" Value="12,0"/>
+                <Setter Property="BorderBrush" Value="{StaticResource GlassBorderBrush}"/>
+                <Setter Property="MinHeight" Value="28"/>
+                <Setter Property="Padding" Value="14,0"/>
                 <Setter Property="FontSize" Value="12"/>
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="ToggleButton">
                             <Border x:Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
-                                    BorderThickness="1" CornerRadius="6" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
+                                    BorderThickness="1" CornerRadius="999" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
                                 <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Border>
                             <ControlTemplate.Triggers>
                                 <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter TargetName="Bd" Property="Background" Value="{StaticResource ControlHoverBrush}"/>
+                                    <Setter TargetName="Bd" Property="Background" Value="#E6FFFFFF"/>
                                 </Trigger>
                                 <Trigger Property="IsChecked" Value="True">
                                     <Setter TargetName="Bd" Property="Background" Value="{StaticResource KoBrush}"/>

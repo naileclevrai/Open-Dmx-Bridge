@@ -27,7 +27,6 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="200"/>
         </Grid.RowDefinitions>
 
         <!-- En-tête -->
@@ -114,7 +113,7 @@
                         </StackPanel>
                     </Border>
 
-                    <Border Style="{StaticResource Card}" Margin="0,0,0,12" IsEnabled="{Binding IsBridgeMode}">
+                    <Border Style="{StaticResource Card}" IsEnabled="{Binding IsBridgeMode}">
                         <StackPanel>
                             <TextBlock Text="Sortie DMX" Style="{StaticResource SectionTitle}"/>
                             <TextBlock Text="Type d'interface" Style="{StaticResource FieldLabel}" Margin="0,0,0,4"/>
@@ -132,127 +131,134 @@
                         </StackPanel>
                     </Border>
 
-                    <Border Style="{StaticResource Card}">
-                        <StackPanel>
-                            <TextBlock Text="Analyse" Style="{StaticResource SectionTitle}"/>
-                            <TextBlock Text="{Binding MonitorSummary}" FontFamily="Consolas" FontSize="12"
-                                       Foreground="{StaticResource TextPrimaryBrush}" TextWrapping="Wrap"/>
-                        </StackPanel>
-                    </Border>
                 </StackPanel>
             </ScrollViewer>
 
             <GridSplitter Grid.Column="1" Width="12" HorizontalAlignment="Stretch" Background="Transparent"/>
 
-            <!-- Supervision -->
-            <Grid Grid.Column="2">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
+            <!-- Supervision / Journal -->
+            <TabControl Grid.Column="2" Background="Transparent" BorderThickness="0" Padding="0,8,0,0">
+                <TabItem Header="Supervision">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
 
-                <Border Grid.Row="0" Style="{StaticResource Card}" Margin="0,0,0,12">
-                    <UniformGrid Columns="5" Rows="2">
-                        <StackPanel Margin="0,0,12,12">
-                            <TextBlock Text="Art-Net" Style="{StaticResource StatLabel}"/>
-                            <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
-                                <Ellipse Width="10" Height="10" Margin="0,0,6,0" VerticalAlignment="Center"
-                                         Fill="{Binding ArtNetActive, Converter={StaticResource StatusBrushConverter}}"/>
-                                <TextBlock Text="{Binding MonitorSource}" FontWeight="SemiBold" FontSize="14"
-                                           Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </StackPanel>
-                        <StackPanel Margin="0,0,12,12">
-                            <TextBlock Text="FPS Art-Net" Style="{StaticResource StatLabel}"/>
-                            <TextBlock Text="{Binding ArtNetFps, StringFormat={}{0:F1}}" Style="{StaticResource StatValue}"/>
-                        </StackPanel>
-                        <StackPanel Margin="0,0,12,12">
-                            <TextBlock Text="FPS DMX" Style="{StaticResource StatLabel}"/>
-                            <TextBlock Text="{Binding DmxFps, StringFormat={}{0:F1}}" Style="{StaticResource StatValue}"/>
-                        </StackPanel>
-                        <StackPanel Margin="0,0,12,12">
-                            <TextBlock Text="Dernier paquet" Style="{StaticResource StatLabel}"/>
-                            <TextBlock Text="{Binding LastPacketDisplay}" Style="{StaticResource StatValue}"/>
-                        </StackPanel>
-                        <StackPanel Margin="0,0,0,12">
-                            <TextBlock Text="Sortie DMX" Style="{StaticResource StatLabel}"/>
-                            <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
-                                <Ellipse Width="10" Height="10" Margin="0,0,6,0" VerticalAlignment="Center"
-                                         Fill="{Binding DmxOutputConnected, Converter={StaticResource StatusBrushConverter}}"/>
-                                <TextBlock Text="{Binding DmxOutputConnected, Converter={StaticResource OutputStateConverter}}"
-                                           FontWeight="SemiBold" FontSize="14"
-                                           Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </StackPanel>
+                        <Border Grid.Row="0" Style="{StaticResource Card}" Margin="0,0,0,12">
+                            <UniformGrid Columns="5" Rows="2">
+                                <StackPanel Margin="0,0,12,12">
+                                    <TextBlock Text="Art-Net" Style="{StaticResource StatLabel}"/>
+                                    <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                                        <Ellipse Width="10" Height="10" Margin="0,0,6,0" VerticalAlignment="Center"
+                                                 Fill="{Binding ArtNetActive, Converter={StaticResource StatusBrushConverter}}"/>
+                                        <TextBlock Text="{Binding MonitorSource}" FontWeight="SemiBold" FontSize="14"
+                                                   Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </StackPanel>
+                                <StackPanel Margin="0,0,12,12">
+                                    <TextBlock Text="FPS Art-Net" Style="{StaticResource StatLabel}"/>
+                                    <TextBlock Text="{Binding ArtNetFps, StringFormat={}{0:F1}}" Style="{StaticResource StatValue}"/>
+                                </StackPanel>
+                                <StackPanel Margin="0,0,12,12">
+                                    <TextBlock Text="FPS DMX" Style="{StaticResource StatLabel}"/>
+                                    <TextBlock Text="{Binding DmxFps, StringFormat={}{0:F1}}" Style="{StaticResource StatValue}"/>
+                                </StackPanel>
+                                <StackPanel Margin="0,0,12,12">
+                                    <TextBlock Text="Dernier paquet" Style="{StaticResource StatLabel}"/>
+                                    <TextBlock Text="{Binding LastPacketDisplay}" Style="{StaticResource StatValue}"/>
+                                </StackPanel>
+                                <StackPanel Margin="0,0,0,12">
+                                    <TextBlock Text="Sortie DMX" Style="{StaticResource StatLabel}"/>
+                                    <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                                        <Ellipse Width="10" Height="10" Margin="0,0,6,0" VerticalAlignment="Center"
+                                                 Fill="{Binding DmxOutputConnected, Converter={StaticResource StatusBrushConverter}}"/>
+                                        <TextBlock Text="{Binding DmxOutputConnected, Converter={StaticResource OutputStateConverter}}"
+                                                   FontWeight="SemiBold" FontSize="14"
+                                                   Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </StackPanel>
 
-                        <StackPanel Margin="0,0,12,0">
-                            <TextBlock Text="Paquets reçus" Style="{StaticResource StatLabel}"/>
-                            <TextBlock Text="{Binding PacketsReceived, StringFormat=N0}" Style="{StaticResource StatValue}" FontSize="16"/>
-                        </StackPanel>
-                        <StackPanel Margin="0,0,12,0">
-                            <TextBlock Text="Paquets envoyés" Style="{StaticResource StatLabel}"/>
-                            <TextBlock Text="{Binding PacketsSent, StringFormat=N0}" Style="{StaticResource StatValue}" FontSize="16"/>
-                        </StackPanel>
-                        <StackPanel Margin="0,0,12,0">
-                            <TextBlock Text="Séquences perdues" Style="{StaticResource StatLabel}"/>
-                            <TextBlock Text="{Binding LostSequences}" Style="{StaticResource StatValue}" FontSize="16"/>
-                        </StackPanel>
-                        <StackPanel Margin="0,0,12,0">
-                            <TextBlock Text="Hors ordre" Style="{StaticResource StatLabel}"/>
-                            <TextBlock Text="{Binding OutOfOrderPackets}" Style="{StaticResource StatValue}" FontSize="16"/>
-                        </StackPanel>
+                                <StackPanel Margin="0,0,12,0">
+                                    <TextBlock Text="Paquets reçus" Style="{StaticResource StatLabel}"/>
+                                    <TextBlock Text="{Binding PacketsReceived, StringFormat=N0}" Style="{StaticResource StatValue}" FontSize="16"/>
+                                </StackPanel>
+                                <StackPanel Margin="0,0,12,0">
+                                    <TextBlock Text="Paquets envoyés" Style="{StaticResource StatLabel}"/>
+                                    <TextBlock Text="{Binding PacketsSent, StringFormat=N0}" Style="{StaticResource StatValue}" FontSize="16"/>
+                                </StackPanel>
+                                <StackPanel Margin="0,0,12,0">
+                                    <TextBlock Text="Séquences perdues" Style="{StaticResource StatLabel}"/>
+                                    <TextBlock Text="{Binding LostSequences}" Style="{StaticResource StatValue}" FontSize="16"/>
+                                </StackPanel>
+                                <StackPanel Margin="0,0,12,0">
+                                    <TextBlock Text="Hors ordre" Style="{StaticResource StatLabel}"/>
+                                    <TextBlock Text="{Binding OutOfOrderPackets}" Style="{StaticResource StatValue}" FontSize="16"/>
+                                </StackPanel>
+                                <StackPanel>
+                                    <TextBlock Text="Paquets invalides" Style="{StaticResource StatLabel}"/>
+                                    <TextBlock Text="{Binding InvalidPackets}" Style="{StaticResource StatValue}" FontSize="16"/>
+                                </StackPanel>
+                            </UniformGrid>
+                        </Border>
+
+                        <Border Grid.Row="1" Style="{StaticResource Card}">
+                            <DockPanel>
+                                <TextBlock DockPanel.Dock="Top" Text="512 canaux DMX" Style="{StaticResource SectionTitle}"/>
+                                <controls:DmxChannelMonitor x:Name="ChannelMonitor" MinHeight="200"/>
+                            </DockPanel>
+                        </Border>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="Journal">
+                    <Border Style="{StaticResource Card}" Padding="14,10">
+                        <DockPanel>
+                                        <Grid DockPanel.Dock="Top" Margin="0,0,0,8">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="Messages de l'application" Style="{StaticResource Hint}" Margin="0" VerticalAlignment="Center"/>
+                                            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                                <ComboBox Width="120" Margin="0,0,8,0"
+                                                          ItemsSource="{Binding LogLevelOptions}"
+                                                          SelectedItem="{Binding SelectedLogLevel}"
+                                                          DisplayMemberPath="Label"/>
+                                                <Button Content="Exporter" Command="{Binding ExportLogsCommand}" Margin="0,0,8,0"/>
+                                                <Button Content="Effacer" Command="{Binding ClearLogsCommand}"/>
+                                            </StackPanel>
+                                        </Grid>
+                                        <ListBox ItemsSource="{Binding LogEntries}" Background="#FAFAFA"
+                                                 BorderThickness="1" BorderBrush="{StaticResource CardBorderBrush}"
+                                                 ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                                 VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
+                                            <ListBox.ItemContainerStyle>
+                                                <Style TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+                                                    <Setter Property="Padding" Value="8,1"/>
+                                                    <Setter Property="MinHeight" Value="0"/>
+                                                </Style>
+                                            </ListBox.ItemContainerStyle>
+                                            <ListBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding}" FontFamily="Cascadia Mono, Consolas" FontSize="12"
+                                                               Foreground="{Binding Level, Converter={StaticResource LogLevelBrushConverter}}"/>
+                                                </DataTemplate>
+                                            </ListBox.ItemTemplate>
+                                        </ListBox>
+                                    </DockPanel>
+                    </Border>
+                </TabItem>
+                <TabItem Header="Diagnostic">
+                    <Border Style="{StaticResource Card}">
                         <StackPanel>
-                            <TextBlock Text="Paquets invalides" Style="{StaticResource StatLabel}"/>
-                            <TextBlock Text="{Binding InvalidPackets}" Style="{StaticResource StatValue}" FontSize="16"/>
+                            <TextBlock Text="Résumé Art-Net / DMX" Style="{StaticResource SectionTitle}"/>
+                            <TextBlock Text="{Binding MonitorSummary}" FontFamily="Consolas" FontSize="12"
+                                       Foreground="{StaticResource TextPrimaryBrush}" TextWrapping="Wrap"/>
                         </StackPanel>
-                    </UniformGrid>
-                </Border>
-
-                <Border Grid.Row="1" Style="{StaticResource Card}">
-                    <DockPanel>
-                        <TextBlock DockPanel.Dock="Top" Text="512 canaux DMX" Style="{StaticResource SectionTitle}"/>
-                        <controls:DmxChannelMonitor x:Name="ChannelMonitor" MinHeight="200"/>
-                    </DockPanel>
-                </Border>
-            </Grid>
+                    </Border>
+                </TabItem>
+            </TabControl>
         </Grid>
 
-        <!-- Journal -->
-        <Border Grid.Row="3" Style="{StaticResource Card}" Margin="0,12,0,0" Padding="14,10">
-            <DockPanel>
-                <Grid DockPanel.Dock="Top" Margin="0,0,0,8">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Text="Journal" Style="{StaticResource SectionTitle}" Margin="0" VerticalAlignment="Center"/>
-                    <StackPanel Grid.Column="1" Orientation="Horizontal">
-                        <ComboBox Width="120" Margin="0,0,8,0"
-                                  ItemsSource="{Binding LogLevelOptions}"
-                                  SelectedItem="{Binding SelectedLogLevel}"
-                                  DisplayMemberPath="Label"/>
-                        <Button Content="Exporter" Command="{Binding ExportLogsCommand}" Margin="0,0,8,0"/>
-                        <Button Content="Effacer" Command="{Binding ClearLogsCommand}"/>
-                    </StackPanel>
-                </Grid>
-                <ListBox ItemsSource="{Binding LogEntries}" Background="#FAFAFA"
-                         BorderThickness="1" BorderBrush="{StaticResource CardBorderBrush}"
-                         ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                         VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
-                    <ListBox.ItemContainerStyle>
-                        <Style TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
-                            <Setter Property="Padding" Value="8,1"/>
-                            <Setter Property="MinHeight" Value="0"/>
-                        </Style>
-                    </ListBox.ItemContainerStyle>
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding}" FontFamily="Cascadia Mono, Consolas" FontSize="12"
-                                       Foreground="{Binding Level, Converter={StaticResource LogLevelBrushConverter}}"/>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-            </DockPanel>
-        </Border>
     </Grid>
 </Window>

@@ -26,6 +26,9 @@ public sealed class AppSettings
     /// <summary>Log TRACE périodique des timings break/MAB mesurés (logiciel).</summary>
     public bool EnableTimingDiagnostics { get; set; }
 
+    /// <summary>Apparence : Système (suit Windows), Clair ou Sombre.</summary>
+    public AppTheme Theme { get; set; } = AppTheme.System;
+
     /// <summary>Micro console : premier canal de la page affichée.</summary>
     public int ConsoleStartChannel { get; set; } = 1;
 

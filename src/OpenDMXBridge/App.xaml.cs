@@ -46,6 +46,9 @@ public partial class App : Application
         var settings = Services.GetRequiredService<ISettingsService>();
         settings.Load();
 
+        // Apparence appliquée avant la création de la fenêtre (dictionnaire de thème + ModernWpf).
+        Services.GetRequiredService<ThemeService>().ApplyStartup();
+
         var mainWindow = new MainWindow
         {
             DataContext = Services.GetRequiredService<MainViewModel>()
@@ -73,6 +76,8 @@ public partial class App : Application
         services.AddSingleton<ILoggingService, LoggingService>();
         services.AddSingleton<ISettingsService, SettingsService>();
         services.AddSingleton<IFtdiDriverStatus, FtdiDriverStatus>();
+        services.AddSingleton<ThemeService>();
+        services.AddSingleton<IThemeService>(sp => sp.GetRequiredService<ThemeService>());
 
         services.AddSingleton<OpenDmxOutput>();
         services.AddSingleton<NullDmxOutput>();

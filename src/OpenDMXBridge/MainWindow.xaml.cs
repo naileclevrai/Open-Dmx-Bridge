@@ -39,6 +39,7 @@ public partial class MainWindow : Window
     {
         base.OnSourceInitialized(e);
         TryEnableAcrylicBackdrop();
+        (App.Services.GetService(typeof(Services.Contracts.IThemeService)) as Services.ThemeService)?.ApplyToWindow(this);
     }
 
     /// <summary>Active le fond Acrylic du système derrière la fenêtre ; sinon garde le dégradé de repli.</summary>

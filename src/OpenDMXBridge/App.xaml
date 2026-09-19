@@ -216,18 +216,20 @@
 
             <!-- Champs : coins 6 px, bord fin, hauteur 26 comme macOS -->
             <Style TargetType="ComboBox" BasedOn="{StaticResource {x:Type ComboBox}}">
-                <Setter Property="ui:ControlHelper.CornerRadius" Value="6"/>
+                <Setter Property="ui:ControlHelper.CornerRadius" Value="10"/>
+                <Setter Property="Background" Value="#99FFFFFF"/>
                 <Setter Property="MinHeight" Value="28"/>
                 <Setter Property="FontSize" Value="12"/>
                 <Setter Property="VerticalContentAlignment" Value="Center"/>
-                <Setter Property="BorderBrush" Value="{StaticResource ControlBorderBrush}"/>
+                <Setter Property="BorderBrush" Value="{StaticResource GlassBorderBrush}"/>
             </Style>
             <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
-                <Setter Property="ui:ControlHelper.CornerRadius" Value="6"/>
+                <Setter Property="ui:ControlHelper.CornerRadius" Value="10"/>
+                <Setter Property="Background" Value="#99FFFFFF"/>
                 <Setter Property="MinHeight" Value="28"/>
                 <Setter Property="FontSize" Value="12"/>
                 <Setter Property="VerticalContentAlignment" Value="Center"/>
-                <Setter Property="BorderBrush" Value="{StaticResource ControlBorderBrush}"/>
+                <Setter Property="BorderBrush" Value="{StaticResource GlassBorderBrush}"/>
             </Style>
 
             <!-- Slider façon macOS : piste fine, bouton blanc rond ombré -->

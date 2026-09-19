@@ -210,6 +210,79 @@
                         </Border>
                     </Grid>
                 </TabItem>
+                <TabItem Header="Console">
+                    <Border Style="{StaticResource Card}" DataContext="{Binding Console}">
+                        <DockPanel>
+                            <StackPanel DockPanel.Dock="Top" Margin="0,0,0,12">
+                                <Grid Margin="0,0,0,10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <ui:ToggleSwitch IsOn="{Binding IsEnabled}" OnContent="Console active"
+                                                     OffContent="Console inactive" VerticalAlignment="Center"/>
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <Button Content="&#x25C0;" Command="{Binding PreviousPageCommand}" MinWidth="40" FontSize="11"/>
+                                        <TextBlock Text="{Binding PageDisplay}" Margin="12,0" VerticalAlignment="Center" FontWeight="SemiBold"
+                                                   Foreground="{StaticResource TextPrimaryBrush}"/>
+                                        <Button Content="&#x25B6;" Command="{Binding NextPageCommand}" MinWidth="40" FontSize="11"/>
+                                    </StackPanel>
+                                    <ComboBox Grid.Column="2" Width="240" VerticalAlignment="Center"
+                                              ItemsSource="{Binding MergeModes}"
+                                              SelectedItem="{Binding SelectedMergeMode}"
+                                              DisplayMemberPath="Label"/>
+                                </Grid>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <TextBlock Text="Grand master" Style="{StaticResource StatLabel}" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                        <Slider Width="180" Minimum="0" Maximum="255" Value="{Binding Master}" VerticalAlignment="Center"/>
+                                        <TextBlock Text="{Binding MasterPercent}" Width="48" Margin="10,0,0,0" VerticalAlignment="Center"
+                                                   Foreground="{StaticResource TextPrimaryBrush}"/>
+                                    </StackPanel>
+                                    <TextBlock Grid.Column="1" Text="{Binding HeldSummary}" Style="{StaticResource Hint}" Margin="16,0"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                                        <Button Content="Page à 100 %" Command="{Binding FullPageCommand}" Margin="0,0,8,0"/>
+                                        <Button Content="Tout rendre" Command="{Binding ReleaseAllCommand}" Margin="0,0,8,0"/>
+                                        <ToggleButton Content="Blackout" IsChecked="{Binding IsBlackout}" MinWidth="96"/>
+                                    </StackPanel>
+                                </Grid>
+                            </StackPanel>
+
+                            <ItemsControl ItemsSource="{Binding Faders}" IsEnabled="{Binding IsEnabled}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <UniformGrid Rows="1"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Margin="3,0" Padding="4,8" CornerRadius="6" Background="#F7F7F7"
+                                                BorderBrush="{StaticResource CardBorderBrush}" BorderThickness="1">
+                                            <DockPanel>
+                                                <TextBlock DockPanel.Dock="Top" Text="{Binding Channel}" FontWeight="SemiBold"
+                                                           HorizontalAlignment="Center" Foreground="{StaticResource TextPrimaryBrush}"/>
+                                                <TextBlock DockPanel.Dock="Top" Text="{Binding LevelPercent}" Style="{StaticResource StatLabel}"
+                                                           HorizontalAlignment="Center" Margin="0,2,0,6"/>
+                                                <Button DockPanel.Dock="Bottom" Content="&#x00D7;" Command="{Binding ReleaseCommand}"
+                                                        ToolTip="Rendre le canal au flux Art-Net"
+                                                        HorizontalAlignment="Stretch" Padding="0,2" FontSize="13" Margin="0,6,0,0"/>
+                                                <Slider Orientation="Vertical" Minimum="0" Maximum="255" Value="{Binding Level}"
+                                                        HorizontalAlignment="Center" IsMoveToPointEnabled="True"/>
+                                            </DockPanel>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </DockPanel>
+                    </Border>
+                </TabItem>
                 <TabItem Header="Journal">
                     <Border Style="{StaticResource Card}" Padding="14,10">
                         <DockPanel>

@@ -89,10 +89,19 @@ public partial class MainWindow : Window
         var slide = new TranslateTransform();
         host.RenderTransform = slide;
 
-        slide.BeginAnimation(TranslateTransform.XProperty,
-            new DoubleAnimation(36 * direction, 0, TimeSpan.FromMilliseconds(320)) { EasingFunction = TabEase });
-        host.BeginAnimation(OpacityProperty,
-            new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(260)) { EasingFunction = TabEase });
+        // État de départ posé tout de suite pour éviter qu'une image s'affiche à pleine opacité
+        // avant le premier tick de l'animation (clignotement visible).
+        var offset = 36.0 * direction;
+        slide.X = offset;
+        host.Opacity = 0;
+
+        Dispatcher.BeginInvoke(DispatcherPriority.Render, () =>
+        {
+            slide.BeginAnimation(TranslateTransform.XProperty,
+                new DoubleAnimation(offset, 0, TimeSpan.FromMilliseconds(320)) { EasingFunction = TabEase });
+            host.BeginAnimation(OpacityProperty,
+                new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(260)) { EasingFunction = TabEase });
+        });
     }
 
     private void MoveTabIndicator(bool animate)

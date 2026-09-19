@@ -174,14 +174,22 @@ public sealed class ArtNetNetworkService : INetworkService, IAsyncDisposable
         if (_cts is not null)
             await _cts.CancelAsync().ConfigureAwait(false);
 
+        // Fermer le socket AVANT d'attendre la boucle : ReceiveFrom est bloquant,
+        // seule la fermeture du socket peut la débloquer.
+        var socket = _socket;
+        _socket = null;
+        try { socket?.Close(); }
+        catch { /* déjà fermé */ }
+
         if (_receiveTask is not null)
         {
-            try { await _receiveTask.ConfigureAwait(false); }
+            try { await _receiveTask.WaitAsync(TimeSpan.FromSeconds(2)).ConfigureAwait(false); }
             catch (OperationCanceledException) { }
+            catch (TimeoutException) { _logger.Warning("La boucle de réception Art-Net ne s'est pas arrêtée à temps.", nameof(ArtNetNetworkService)); }
+            catch (Exception) { /* la boucle a déjà journalisé */ }
         }
 
-        _socket?.Dispose();
-        _socket = null;
+        socket?.Dispose();
         _cts?.Dispose();
         _cts = null;
         _receiveTask = null;

@@ -63,10 +63,16 @@
                     </StackPanel>
                 </Border>
             </StackPanel>
-            <Button Grid.Column="1" Style="{StaticResource MacPrimaryButton}"
+            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                <!-- Apparence : Système → Clair → Sombre -->
+                <Button Width="32" Height="32" Padding="0" Margin="0,0,12,0" FontSize="15"
+                        Content="{Binding ThemeGlyph}" ToolTip="{Binding ThemeToolTip}"
+                        Command="{Binding CycleThemeCommand}"/>
+            <Button Style="{StaticResource MacPrimaryButton}"
                     MinWidth="128" Height="32" VerticalAlignment="Center" FontSize="13"
                     Command="{Binding ToggleBridgeCommand}"
                     Content="{Binding IsBridgeRunning, Converter={StaticResource BridgeToggleTextConverter}}"/>
+            </StackPanel>
         </Grid>
         <!-- Alerte FTDI -->
         <Border Grid.Row="1"

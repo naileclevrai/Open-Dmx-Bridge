@@ -21,6 +21,7 @@ public partial class MainViewModel : ObservableObject, IDisposable
     private readonly IBridgeOrchestrator _bridge;
     private readonly ILoggingService _logger;
     private readonly IFtdiDriverStatus _ftdiDriverStatus;
+    private readonly IThemeService _theme;
     private readonly DispatcherTimer _uiTimer;
     private readonly ConcurrentQueue<LogEntry> _pendingLogEntries = new();
 
@@ -32,7 +33,8 @@ public partial class MainViewModel : ObservableObject, IDisposable
         IBridgeOrchestrator bridge,
         ILoggingService logger,
         IFtdiDriverStatus ftdiDriverStatus,
-        ConsoleViewModel console)
+        ConsoleViewModel console,
+        IThemeService theme)
     {
         _settings = settings;
         _network = network;
@@ -42,6 +44,8 @@ public partial class MainViewModel : ObservableObject, IDisposable
         _logger = logger;
         _ftdiDriverStatus = ftdiDriverStatus;
         Console = console;
+        _theme = theme;
+        _theme.ThemeChanged += (_, _) => OnThemeChanged();
 
         LogEntries = new ObservableCollection<LogEntry>();
         NetworkAdapters = new ObservableCollection<NetworkAdapterInfo>();
@@ -83,6 +87,33 @@ public partial class MainViewModel : ObservableObject, IDisposable
     }
 
     public ConsoleViewModel Console { get; }
+
+    /// <summary>Glyphe du bouton d'apparence : ◐ Système, ☀ Clair, ☾ Sombre.</summary>
+    public string ThemeGlyph => _theme.Preference switch
+    {
+        AppTheme.Light => "\u2600",
+        AppTheme.Dark => "\u263E",
+        _ => "\u25D0"
+    };
+
+    public string ThemeToolTip => $"Apparence : {Services.ThemeService.Describe(_theme.Preference)}" +
+        (_theme.Preference == AppTheme.System ? $" ({(_theme.IsDark ? "sombre" : "claire")} actuellement)" : string.Empty) +
+        " — cliquer pour changer";
+
+    [RelayCommand]
+    private void CycleTheme() => _theme.Cycle();
+
+    private void OnThemeChanged()
+    {
+        OnPropertyChanged(nameof(ThemeGlyph));
+        OnPropertyChanged(nameof(ThemeToolTip));
+
+        // Les lignes du journal portent une couleur figée à leur création : on les re-crée pour le nouveau thème.
+        var entries = LogEntries.ToList();
+        LogEntries.Clear();
+        foreach (var entry in entries)
+            LogEntries.Add(entry);
+    }
     public ObservableCollection<LogEntry> LogEntries { get; }
     public ObservableCollection<NetworkAdapterInfo> NetworkAdapters { get; }
     public ObservableCollection<string> OutputTypes { get; }

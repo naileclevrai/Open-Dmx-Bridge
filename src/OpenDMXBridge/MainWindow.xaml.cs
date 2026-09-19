@@ -9,5 +9,12 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
         ChannelMonitor.DmxEngine = App.Services.GetService(typeof(IDmxEngine)) as IDmxEngine;
+        Closing += OnClosing;
+    }
+
+    private void OnClosing(object? sender, System.ComponentModel.CancelEventArgs e)
+    {
+        if (DataContext is ViewModels.MainViewModel vm)
+            vm.SaveSettings();
     }
 }

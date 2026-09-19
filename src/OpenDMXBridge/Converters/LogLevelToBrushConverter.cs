@@ -20,11 +20,11 @@ public sealed class LogLevelToBrushConverter : IValueConverter
         var color = key switch
         {
             "Error" => "#E04B4B",
-            "Warning" or "WARN" => "#E8A838",
-            "Info" => "#8AB4F8",
-            "Debug" => "#6B7280",
-            "Trace" => "#4B5563",
-            _ => "#C8CCD4"
+            "Warning" or "WARN" => "#9D5D00",
+            "Info" => "#1B1B1B",
+            "Debug" => "#7A7A7A",
+            "Trace" => "#9A9A9A",
+            _ => "#1B1B1B"
         };
 
         return new System.Windows.Media.SolidColorBrush(

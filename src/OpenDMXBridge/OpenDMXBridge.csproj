@@ -17,6 +17,12 @@
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
+    <PackageReference Include="ModernWpfUI" Version="0.9.6" />
+    <PackageReference Include="System.IO.Ports" Version="8.0.0" />
   </ItemGroup>
+
+  <Target Name="CopyFtdiDll" AfterTargets="Build" Condition="Exists('$(SystemRoot)\System32\FTD2XX.dll')">
+    <Copy SourceFiles="$(SystemRoot)\System32\FTD2XX.dll" DestinationFolder="$(OutputPath)" SkipUnchangedFiles="true" />
+  </Target>
 
 </Project>

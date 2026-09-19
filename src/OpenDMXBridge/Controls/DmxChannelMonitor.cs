@@ -14,9 +14,9 @@ public class DmxChannelMonitor : UserControl
     private const int ChannelCount = 512;
     private const int Columns = 32;
     private const int Rows = 16;
-    private const int CellWidth = 8;
-    private const int CellHeight = 12;
-    private const int Gap = 1;
+    private const int CellWidth = 14;
+    private const int CellHeight = 22;
+    private const int Gap = 2;
 
     public static readonly DependencyProperty DmxEngineProperty =
         DependencyProperty.Register(nameof(DmxEngine), typeof(IDmxEngine), typeof(DmxChannelMonitor),
@@ -47,7 +47,8 @@ public class DmxChannelMonitor : UserControl
         _image = new Image
         {
             Source = _bitmap,
-            Stretch = Stretch.Fill,
+            Stretch = Stretch.Uniform,
+            VerticalAlignment = VerticalAlignment.Top,
             SnapsToDevicePixels = true
         };
         Content = _image;
@@ -93,7 +94,8 @@ public class DmxChannelMonitor : UserControl
     private void RenderBitmap()
     {
         var pixels = _pixelBuffer;
-        var bg = Color.FromRgb(0xF3, 0xF3, 0xF3);
+        var bg = Color.FromRgb(0xFF, 0xFF, 0xFF);
+        var cell = Color.FromRgb(0xEC, 0xEC, 0xEC);
         Fill(pixels, bg);
 
         for (var i = 0; i < ChannelCount; i++)
@@ -103,8 +105,12 @@ public class DmxChannelMonitor : UserControl
             var x0 = Gap + col * (CellWidth + Gap);
             var y0 = Gap + row * (CellHeight + Gap);
             var level = _levels[i] / 255.0;
-            var barH = Math.Max(1, (int)(level * CellHeight));
-            var color = Color.FromRgb(0x00, (byte)(100 + level * 120), (byte)(180 + level * 50));
+            var barH = (int)Math.Round(level * CellHeight);
+            var color = Color.FromRgb(0x00, (byte)(0x67 + level * 0x30), (byte)(0xC0 + level * 0x3F));
+
+            for (var y = y0; y < y0 + CellHeight; y++)
+                for (var x = x0; x < x0 + CellWidth; x++)
+                    SetPixel(pixels, x, y, cell);
 
             for (var y = y0 + CellHeight - barH; y < y0 + CellHeight; y++)
             {

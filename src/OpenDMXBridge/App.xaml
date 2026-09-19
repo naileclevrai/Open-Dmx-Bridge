@@ -191,7 +191,7 @@
                                         <Condition Property="IsMouseOver" Value="True"/>
                                         <Condition Property="IsSelected" Value="False"/>
                                     </MultiTrigger.Conditions>
-                                    <Setter TargetName="Bd" Property="Background" Value="#4DFFFFFF"/>
+                                    <Setter TargetName="Bd" Property="Background" Value="#66FFFFFF"/>
                                 </MultiTrigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
@@ -212,7 +212,7 @@
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
-                                <Border Grid.Row="0" Background="#66FFFFFF" BorderBrush="{StaticResource GlassBorderBrush}" BorderThickness="1" CornerRadius="999" Padding="2"
+                                <Border Grid.Row="0" Background="#1F1B2B4B" BorderBrush="#40FFFFFF" BorderThickness="1" CornerRadius="999" Padding="3"
                                         HorizontalAlignment="Center" Margin="0,0,0,14">
                                     <TabPanel IsItemsHost="True"/>
                                 </Border>
@@ -340,10 +340,10 @@
             <SolidColorBrush x:Key="ToggleSwitchStrokeOn" Color="#34C759"/>
             <SolidColorBrush x:Key="ToggleSwitchStrokeOnPointerOver" Color="#30B953"/>
             <SolidColorBrush x:Key="ToggleSwitchStrokeOnPressed" Color="#2AA84A"/>
-            <SolidColorBrush x:Key="ToggleSwitchFillOff" Color="#E9E9EB"/>
-            <SolidColorBrush x:Key="ToggleSwitchFillOffPointerOver" Color="#E0E0E3"/>
-            <SolidColorBrush x:Key="ToggleSwitchStrokeOff" Color="#E9E9EB"/>
-            <SolidColorBrush x:Key="ToggleSwitchStrokeOffPointerOver" Color="#E0E0E3"/>
+            <SolidColorBrush x:Key="ToggleSwitchFillOff" Color="#331B2B4B"/>
+            <SolidColorBrush x:Key="ToggleSwitchFillOffPointerOver" Color="#401B2B4B"/>
+            <SolidColorBrush x:Key="ToggleSwitchStrokeOff" Color="#40FFFFFF"/>
+            <SolidColorBrush x:Key="ToggleSwitchStrokeOffPointerOver" Color="#40FFFFFF"/>
             <SolidColorBrush x:Key="ToggleSwitchKnobFillOff" Color="White"/>
             <SolidColorBrush x:Key="ToggleSwitchKnobFillOffPointerOver" Color="White"/>
             <SolidColorBrush x:Key="ToggleSwitchKnobFillOn" Color="White"/>

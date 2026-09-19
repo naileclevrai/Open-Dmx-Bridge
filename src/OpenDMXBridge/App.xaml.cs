@@ -1,3 +1,4 @@
+using System.IO;
 using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using OpenDMXBridge.Services;
@@ -29,13 +30,17 @@ public partial class App : Application
         DispatcherUnhandledException += (_, args) =>
         {
             logger.Error($"Erreur UI : {args.Exception.Message}", nameof(App));
+            WriteCrashLog("UI", args.Exception);
             args.Handled = true;
         };
 
         AppDomain.CurrentDomain.UnhandledException += (_, args) =>
         {
             if (args.ExceptionObject is Exception ex)
+            {
                 logger.Error($"Erreur fatale : {ex.Message}", nameof(App));
+                WriteCrashLog("Fatal", ex);
+            }
         };
 
         var settings = Services.GetRequiredService<ISettingsService>();
@@ -46,6 +51,21 @@ public partial class App : Application
             DataContext = Services.GetRequiredService<MainViewModel>()
         };
         mainWindow.Show();
+    }
+
+    /// <summary>Trace les exceptions non gérées dans %LOCALAPPDATA%\OpenDMXBridge\crash.log.</summary>
+    private static void WriteCrashLog(string origin, Exception ex)
+    {
+        try
+        {
+            var dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "OpenDMXBridge");
+            Directory.CreateDirectory(dir);
+            File.AppendAllText(Path.Combine(dir, "crash.log"), $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] [{origin}] {ex}{Environment.NewLine}{Environment.NewLine}");
+        }
+        catch
+        {
+            // ne jamais échouer dans le gestionnaire d'erreurs
+        }
     }
 
     private static void ConfigureServices(IServiceCollection services)

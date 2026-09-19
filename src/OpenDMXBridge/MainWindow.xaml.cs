@@ -85,11 +85,9 @@ public partial class MainWindow : Window
         if (MainTabs.Template?.FindName("PART_SelectedContentHost", MainTabs) is not ContentPresenter host)
             return;
 
-        if (host.RenderTransform is not TranslateTransform slide)
-        {
-            slide = new TranslateTransform();
-            host.RenderTransform = slide;
-        }
+        // La transformation issue du template est gelée : on en pose une neuve, animable.
+        var slide = new TranslateTransform();
+        host.RenderTransform = slide;
 
         slide.BeginAnimation(TranslateTransform.XProperty,
             new DoubleAnimation(36 * direction, 0, TimeSpan.FromMilliseconds(320)) { EasingFunction = TabEase });

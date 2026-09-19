@@ -62,6 +62,7 @@ Open DMX USB (FTDI FT232R) à 40 trames par seconde, dans une interface façon m
 
 ### 🖥️ Interface
 - Style macOS **Liquid Glass** : flou système Acrylic, verre translucide, capsules
+- **Mode sombre** : Système (suit Windows), Clair ou Sombre, bascule à chaud depuis l'en-tête
 - Police SF Pro si installée (repli Segoe UI)
 - Animations : indicateur d'onglet glissant, transitions, boutons réactifs
 - Moniteur temps réel des 512 canaux
@@ -86,6 +87,12 @@ Open DMX USB (FTDI FT232R) à 40 trames par seconde, dans une interface façon m
 **Console** — 16 faders, master, Flash, Blackout, fusion HTP/Override
 
 <img src="docs/screenshots/console.png" width="900" alt="Onglet Console">
+
+<br><br>
+
+**Mode sombre** — même interface, palette nuit
+
+<img src="docs/screenshots/dark.png" width="900" alt="Mode sombre">
 
 </div>
 
@@ -135,6 +142,10 @@ quand le boîtier est ouvert. Le moniteur affiche les 512 canaux en temps réel.
 |---|---|
 | **Bridge** | Art-Net → sortie DMX physique (usage normal) |
 | **Monitor** | Analyse du flux Art-Net sans sortie DMX |
+
+### Apparence
+
+Le bouton rond à gauche de **Démarrer** passe de **◐ Système** (suit le réglage « Couleurs » de Windows) à **☀ Clair** puis **☾ Sombre**. Le choix est mémorisé.
 
 ---
 
@@ -255,7 +266,6 @@ Détails des timings DMX512 : [docs/DMX_TIMING.md](docs/DMX_TIMING.md).
 - [ ] sACN (E1.31), Enttec USB Pro, DMXKing
 - [ ] Multi-univers et mapping
 - [ ] Enregistrement / lecture de séquences
-- [ ] Mode sombre
 - [ ] Installeur et mise à jour automatique
 
 ---

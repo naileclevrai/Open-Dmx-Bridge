@@ -36,8 +36,8 @@
             <SolidColorBrush x:Key="TextTertiaryBrush" Color="#AEAEB2"/>
             <SolidColorBrush x:Key="OkBrush" Color="#34C759"/>
             <SolidColorBrush x:Key="KoBrush" Color="#FF3B30"/>
-            <SolidColorBrush x:Key="WarnBgBrush" Color="#FFF6E5"/>
-            <SolidColorBrush x:Key="WarnBorderBrush" Color="#FFD599"/>
+            <SolidColorBrush x:Key="WarnBgBrush" Color="#CCFFF1D6"/>
+            <SolidColorBrush x:Key="WarnBorderBrush" Color="#B3FFFFFF"/>
             <SolidColorBrush x:Key="WarnTextBrush" Color="#7A4B00"/>
 
             <!-- Carte façon macOS : coins 10 px, bord fin, ombre très douce -->

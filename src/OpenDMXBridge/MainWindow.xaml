@@ -80,7 +80,7 @@
         <Border Grid.Row="1"
                 Background="{StaticResource WarnBgBrush}"
                 BorderBrush="{StaticResource WarnBorderBrush}"
-                BorderThickness="1" CornerRadius="6" Padding="12,8" Margin="0,0,0,12"
+                BorderThickness="1" CornerRadius="16" Padding="14,10" Margin="0,0,0,14"
                 Visibility="{Binding ShowFtdiWarning, Converter={StaticResource BoolToVisibilityConverter}}">
             <TextBlock Text="{Binding FtdiDriverMessage}" TextWrapping="Wrap"
                        Foreground="{StaticResource WarnTextBrush}"/>

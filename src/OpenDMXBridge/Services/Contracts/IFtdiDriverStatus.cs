@@ -7,5 +7,7 @@ public interface IFtdiDriverStatus
 {
     bool IsAvailable { get; }
     string? UnavailableMessage { get; }
+    string? GetDetectionHint();
     void Probe();
+    void ResetProbe();
 }

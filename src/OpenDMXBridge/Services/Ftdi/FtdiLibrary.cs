@@ -1,3 +1,4 @@
+using System.IO;
 using System.Runtime.InteropServices;
 
 namespace OpenDMXBridge.Services.Ftdi;
@@ -52,6 +53,44 @@ internal sealed class FtdiLibrary
 
     public void EnsureProbed() => TryLoad();
 
+    public void ResetProbe()
+    {
+        lock (_lock)
+        {
+            if (_module != IntPtr.Zero)
+            {
+                NativeLibrary.Free(_module);
+                _module = IntPtr.Zero;
+            }
+
+            _unavailableReason = null;
+            _probeAttempted = false;
+            _createDeviceInfoList = null;
+            _getDeviceInfoDetail = null;
+            _open = null;
+            _close = null;
+            _setBaudRate = null;
+            _setDataCharacteristics = null;
+            _setFlowControl = null;
+            _setLatencyTimer = null;
+            _setBreakOn = null;
+            _setBreakOff = null;
+            _purge = null;
+            _write = null;
+            _getStatus = null;
+            _resetDevice = null;
+        }
+    }
+
+    public int GetD2xxDeviceCount()
+    {
+        if (!TryLoad() || _createDeviceInfoList is null)
+            return -1;
+
+        uint count = 0;
+        return _createDeviceInfoList(ref count) == 0 ? (int)count : -1;
+    }
+
     private bool TryLoad()
     {
         lock (_lock)
@@ -64,16 +103,13 @@ internal sealed class FtdiLibrary
 
             _probeAttempted = true;
 
-            if (!NativeLibrary.TryLoad("FTD2XX.dll", typeof(FtdiLibrary).Assembly, DllImportSearchPath.AssemblyDirectory, out _module))
+            if (!TryLoadFromPaths(out _module))
             {
-                if (!NativeLibrary.TryLoad("FTD2XX.dll", out _module))
-                {
-                    _unavailableReason =
-                        "FTD2XX.dll introuvable. Installez le pilote FTDI D2XX (x64) " +
-                        "ou copiez FTD2XX.dll à côté de OpenDMXBridge.exe. " +
-                        "Le mode Monitor reste disponible.";
-                    return false;
-                }
+                _unavailableReason =
+                    "FTD2XX.dll introuvable. Installez le pilote FTDI D2XX (x64) " +
+                    "depuis ftdichip.com/drivers/d2xx-drivers/ " +
+                    "ou copiez FTD2XX.dll (64 bits) à côté de OpenDMXBridge.exe.";
+                return false;
             }
 
             try
@@ -113,6 +149,29 @@ internal sealed class FtdiLibrary
                 return false;
             }
         }
+    }
+
+    private static bool TryLoadFromPaths(out IntPtr module)
+    {
+        module = IntPtr.Zero;
+
+        var candidates = new[]
+        {
+            Path.Combine(AppContext.BaseDirectory, "FTD2XX.dll"),
+            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "FTD2XX.dll"),
+            "FTD2XX.dll"
+        };
+
+        foreach (var path in candidates)
+        {
+            if (Path.IsPathRooted(path) && !File.Exists(path))
+                continue;
+
+            if (NativeLibrary.TryLoad(path, out module))
+                return true;
+        }
+
+        return false;
     }
 
     private void SetUnavailable(string reason)
@@ -261,6 +320,8 @@ internal static class FtdiNative
     public static string? UnavailableReason => Lib.UnavailableReason;
 
     public static void EnsureProbed() => Lib.EnsureProbed();
+    public static void ResetProbe() => Lib.ResetProbe();
+    public static int GetD2xxDeviceCount() => Lib.GetD2xxDeviceCount();
 
     public static int FT_CreateDeviceInfoList(ref uint numDevs) => Lib.FT_CreateDeviceInfoList(ref numDevs);
     public static int FT_GetDeviceInfoDetail(uint index, ref uint flags, ref uint type, ref uint id, ref uint locId,

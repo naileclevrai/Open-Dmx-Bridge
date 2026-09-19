@@ -36,6 +36,28 @@ public sealed partial class ConsoleFaderViewModel : ObservableObject
         IsHeld = true;
     }
 
+    private int _flashRestore = -1;
+
+    /// <summary>Flash : canal à 100 % tant que le bouton est maintenu.</summary>
+    public void FlashOn()
+    {
+        if (_flashRestore >= 0)
+            return;
+
+        _flashRestore = IsHeld ? Level : -2;
+        Level = 255;
+    }
+
+    public void FlashOff()
+    {
+        var restore = _flashRestore;
+        _flashRestore = -1;
+        if (restore == -2)
+            Release();
+        else if (restore >= 0)
+            Level = restore;
+    }
+
     /// <summary>Rend le canal au flux Art-Net.</summary>
     [RelayCommand]
     public void Release()
@@ -183,4 +205,18 @@ public sealed partial class ConsoleViewModel : ObservableObject
     }
 
     public void RefreshSummary() => OnPropertyChanged(nameof(HeldSummary));
+
+    public void LoadFrom(AppSettings s)
+    {
+        StartChannel = s.ConsoleStartChannel;
+        Master = s.ConsoleMaster;
+        SelectedMergeMode = MergeModes.FirstOrDefault(m => m.Value == s.ConsoleMergeMode) ?? MergeModes[0];
+    }
+
+    public void SaveTo(AppSettings s)
+    {
+        s.ConsoleStartChannel = StartChannel;
+        s.ConsoleMaster = Master;
+        s.ConsoleMergeMode = SelectedMergeMode?.Value ?? ConsoleMergeMode.Htp;
+    }
 }

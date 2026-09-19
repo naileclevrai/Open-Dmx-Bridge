@@ -340,6 +340,7 @@ public partial class MainViewModel : ObservableObject, IDisposable
         SelectedLogLevel = FindOption(LogLevelOptions, s.MinimumLogLevel)
                            ?? LogLevelOptions[3];
         _logger.MinimumLevel = SelectedLogLevel.Value;
+        Console.LoadFrom(s);
 
         UpdateUniverseDisplay();
 
@@ -361,6 +362,7 @@ public partial class MainViewModel : ObservableObject, IDisposable
             s.OutputDeviceId = SelectedOutputDevice?.Id;
             s.OperationMode = OperationMode;
             s.MinimumLogLevel = SelectedLogLevel?.Value ?? LogLevel.Info;
+            Console.SaveTo(s);
         });
         _settings.Save();
     }

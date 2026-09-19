@@ -25,4 +25,13 @@ public sealed class AppSettings
 
     /// <summary>Log TRACE périodique des timings break/MAB mesurés (logiciel).</summary>
     public bool EnableTimingDiagnostics { get; set; }
+
+    /// <summary>Micro console : premier canal de la page affichée.</summary>
+    public int ConsoleStartChannel { get; set; } = 1;
+
+    /// <summary>Micro console : grand master 0–255.</summary>
+    public int ConsoleMaster { get; set; } = 255;
+
+    /// <summary>Micro console : règle de fusion avec l'Art-Net.</summary>
+    public Services.Dmx.ConsoleMergeMode ConsoleMergeMode { get; set; } = Services.Dmx.ConsoleMergeMode.Htp;
 }

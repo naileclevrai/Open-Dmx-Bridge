@@ -308,6 +308,22 @@
                 </Style.Triggers>
             </Style>
 
+            <!-- Interrupteur vert macOS -->
+            <SolidColorBrush x:Key="ToggleSwitchFillOn" Color="#34C759"/>
+            <SolidColorBrush x:Key="ToggleSwitchFillOnPointerOver" Color="#30B953"/>
+            <SolidColorBrush x:Key="ToggleSwitchFillOnPressed" Color="#2AA84A"/>
+            <SolidColorBrush x:Key="ToggleSwitchStrokeOn" Color="#34C759"/>
+            <SolidColorBrush x:Key="ToggleSwitchStrokeOnPointerOver" Color="#30B953"/>
+            <SolidColorBrush x:Key="ToggleSwitchStrokeOnPressed" Color="#2AA84A"/>
+            <SolidColorBrush x:Key="ToggleSwitchFillOff" Color="#E9E9EB"/>
+            <SolidColorBrush x:Key="ToggleSwitchFillOffPointerOver" Color="#E0E0E3"/>
+            <SolidColorBrush x:Key="ToggleSwitchStrokeOff" Color="#E9E9EB"/>
+            <SolidColorBrush x:Key="ToggleSwitchStrokeOffPointerOver" Color="#E0E0E3"/>
+            <SolidColorBrush x:Key="ToggleSwitchKnobFillOff" Color="White"/>
+            <SolidColorBrush x:Key="ToggleSwitchKnobFillOffPointerOver" Color="White"/>
+            <SolidColorBrush x:Key="ToggleSwitchKnobFillOn" Color="White"/>
+            <SolidColorBrush x:Key="ToggleSwitchKnobFillOnPointerOver" Color="White"/>
+
             <Style x:Key="Card" TargetType="Border">
                 <Setter Property="Background" Value="{StaticResource CardBrush}"/>
                 <Setter Property="BorderBrush" Value="{StaticResource CardBorderBrush}"/>

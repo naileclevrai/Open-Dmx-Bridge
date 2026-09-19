@@ -1,0 +1,67 @@
+OpenDMX Bridge
+Copyright 2025-2026 NailecMC (naileclevrai)
+
+This product is licensed under the Apache License, Version 2.0.
+See the LICENSE file for the full text.
+
+------------------------------------------------------------------------
+Third-party components
+------------------------------------------------------------------------
+
+This product includes or depends on the following software, each subject
+to its own license terms:
+
+  ModernWpfUI
+    https://github.com/Kinnara/ModernWpf
+    Copyright (c) Yimeng Wu
+    Licensed under the MIT License.
+
+  CommunityToolkit.Mvvm (.NET Community Toolkit)
+    https://github.com/CommunityToolkit/dotnet
+    Copyright (c) .NET Foundation and Contributors
+    Licensed under the MIT License.
+
+  Microsoft.Extensions.DependencyInjection
+    https://github.com/dotnet/runtime
+    Copyright (c) .NET Foundation and Contributors
+    Licensed under the MIT License.
+
+  System.IO.Ports
+    https://github.com/dotnet/runtime
+    Copyright (c) .NET Foundation and Contributors
+    Licensed under the MIT License.
+
+  .NET 8 Desktop Runtime and Windows Presentation Foundation (WPF)
+    https://github.com/dotnet/wpf
+    Copyright (c) .NET Foundation and Contributors
+    Licensed under the MIT License. The runtime is not bundled; it must be
+    installed separately by the end user.
+
+------------------------------------------------------------------------
+Components used at runtime but NOT distributed with this product
+------------------------------------------------------------------------
+
+  FTDI D2XX / VCP drivers (FTD2XX.dll)
+    https://ftdichip.com/drivers/
+    Copyright (c) Future Technology Devices International Ltd.
+    Proprietary driver, subject to the FTDI Driver Licence Terms. This
+    product loads FTD2XX.dll dynamically from the user's system when
+    present and does not redistribute it.
+
+  SF Pro (Text / Display) fonts
+    Copyright (c) Apple Inc.
+    Used only if already installed on the user's system, subject to the
+    Apple font license. Not redistributed; Segoe UI is used as fallback.
+
+------------------------------------------------------------------------
+Trademarks
+------------------------------------------------------------------------
+
+  Art-Net(TM) Designed by and Copyright Artistic Licence Holdings Ltd.
+  Enttec, Open DMX USB and DMX USB Pro are trademarks of ENTTEC Pty Ltd.
+  grandMA is a trademark of MA Lighting Technology GmbH.
+  Windows is a trademark of Microsoft Corporation.
+  macOS and SF Pro are trademarks of Apple Inc.
+
+  Use of these names is for identification and compatibility purposes
+  only and does not imply endorsement by their respective owners.

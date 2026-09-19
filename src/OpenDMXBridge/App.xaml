@@ -148,6 +148,66 @@
             <Style TargetType="Button" BasedOn="{StaticResource MacButton}"/>
             <Style TargetType="ToggleButton" BasedOn="{StaticResource MacToggleButton}"/>
 
+            <!-- TabControl façon « segmented control » macOS -->
+            <Style x:Key="MacSegment" TargetType="TabItem">
+                <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+                <Setter Property="FontSize" Value="12"/>
+                <Setter Property="Padding" Value="14,4"/>
+                <Setter Property="Margin" Value="1"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="TabItem">
+                            <Border x:Name="Bd" Background="Transparent" CornerRadius="6" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
+                                <ContentPresenter x:Name="Content" ContentSource="Header" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                  TextElement.FontWeight="Medium"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter TargetName="Bd" Property="Background" Value="White"/>
+                                    <Setter TargetName="Content" Property="TextElement.FontWeight" Value="SemiBold"/>
+                                    <Setter TargetName="Bd" Property="Effect">
+                                        <Setter.Value>
+                                            <DropShadowEffect BlurRadius="4" ShadowDepth="1" Direction="270" Opacity="0.16" Color="Black"/>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Trigger>
+                                <MultiTrigger>
+                                    <MultiTrigger.Conditions>
+                                        <Condition Property="IsMouseOver" Value="True"/>
+                                        <Condition Property="IsSelected" Value="False"/>
+                                    </MultiTrigger.Conditions>
+                                    <Setter TargetName="Bd" Property="Background" Value="#D6D6DB"/>
+                                </MultiTrigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="MacSegmentedControl" TargetType="TabControl">
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="Padding" Value="0"/>
+                <Setter Property="ItemContainerStyle" Value="{StaticResource MacSegment}"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="TabControl">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <Border Grid.Row="0" Background="{StaticResource SegmentBrush}" CornerRadius="8" Padding="2"
+                                        HorizontalAlignment="Center" Margin="0,0,0,14">
+                                    <TabPanel IsItemsHost="True"/>
+                                </Border>
+                                <ContentPresenter Grid.Row="1" ContentSource="SelectedContent"/>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
             <Style x:Key="Card" TargetType="Border">
                 <Setter Property="Background" Value="{StaticResource CardBrush}"/>
                 <Setter Property="BorderBrush" Value="{StaticResource CardBorderBrush}"/>

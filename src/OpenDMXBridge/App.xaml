@@ -208,6 +208,24 @@
                 </Setter>
             </Style>
 
+            <!-- Champs : coins 6 px, bord fin, hauteur 26 comme macOS -->
+            <Style TargetType="ComboBox" BasedOn="{StaticResource {x:Type ComboBox}}">
+                <Setter Property="ui:ControlHelper.CornerRadius" Value="6"/>
+                <Setter Property="MinHeight" Value="26"/>
+                <Setter Property="Padding" Value="10,0,6,0"/>
+                <Setter Property="FontSize" Value="12"/>
+                <Setter Property="Background" Value="{StaticResource ControlBrush}"/>
+                <Setter Property="BorderBrush" Value="{StaticResource ControlBorderBrush}"/>
+            </Style>
+            <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+                <Setter Property="ui:ControlHelper.CornerRadius" Value="6"/>
+                <Setter Property="MinHeight" Value="26"/>
+                <Setter Property="Padding" Value="8,3"/>
+                <Setter Property="FontSize" Value="12"/>
+                <Setter Property="Background" Value="{StaticResource ControlBrush}"/>
+                <Setter Property="BorderBrush" Value="{StaticResource ControlBorderBrush}"/>
+            </Style>
+
             <Style x:Key="Card" TargetType="Border">
                 <Setter Property="Background" Value="{StaticResource CardBrush}"/>
                 <Setter Property="BorderBrush" Value="{StaticResource CardBorderBrush}"/>

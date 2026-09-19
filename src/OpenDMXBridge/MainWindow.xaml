@@ -357,11 +357,17 @@
                 </TabItem>
                 <TabItem Header="Diagnostic">
                     <Border Style="{StaticResource Card}">
-                        <StackPanel>
-                            <TextBlock Text="Résumé Art-Net / DMX" Style="{StaticResource SectionTitle}"/>
-                            <TextBlock Text="{Binding MonitorSummary}" FontFamily="{StaticResource MonoFont}" FontSize="12"
-                                       Foreground="{StaticResource TextPrimaryBrush}" TextWrapping="Wrap"/>
-                        </StackPanel>
+                        <DockPanel>
+                            <StackPanel DockPanel.Dock="Top" Margin="0,0,0,12">
+                                <TextBlock Text="Diagnostic" Style="{StaticResource SectionTitle}" Margin="0"/>
+                                <TextBlock Text="Résumé Art-Net / DMX en temps réel" Style="{StaticResource Hint}" Margin="0,2,0,0"/>
+                            </StackPanel>
+                            <Border Background="#80FFFFFF" CornerRadius="14" BorderBrush="{StaticResource GlassInsetBrush}" BorderThickness="1" Padding="16,14"
+                                    VerticalAlignment="Top">
+                                <TextBlock Text="{Binding MonitorSummary}" FontFamily="{StaticResource MonoFont}" FontSize="12" LineHeight="20"
+                                           Foreground="{StaticResource TextPrimaryBrush}" TextWrapping="Wrap"/>
+                            </Border>
+                        </DockPanel>
                     </Border>
                 </TabItem>
             </TabControl>

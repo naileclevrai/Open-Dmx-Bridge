@@ -29,6 +29,8 @@ public readonly struct UniverseId : IEquatable<UniverseId>
 
     public override int GetHashCode() => HashCode.Combine(Net, SubNet, Universe);
 
+    public override string ToString() => $"{Net}.{SubNet}.{Universe}";
+
     public static bool operator ==(UniverseId left, UniverseId right) => left.Equals(right);
     public static bool operator !=(UniverseId left, UniverseId right) => !left.Equals(right);
 }

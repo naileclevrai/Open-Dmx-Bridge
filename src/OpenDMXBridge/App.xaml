@@ -50,8 +50,28 @@
             <SolidColorBrush x:Key="GlassTrackBrush" Color="#26000000"/>
 
             <!-- Carte façon macOS : coins 10 px, bord fin, ombre très douce -->
+            <!-- Animation d appui : le bouton s enfonce légèrement -->
+            <Storyboard x:Key="PressIn">
+                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleX" To="0.96" Duration="0:0:0.08"/>
+                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleY" To="0.96" Duration="0:0:0.08"/>
+            </Storyboard>
+            <Storyboard x:Key="PressOut">
+                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleX" To="1" Duration="0:0:0.18">
+                    <DoubleAnimation.EasingFunction><BackEase EasingMode="EaseOut" Amplitude="0.4"/></DoubleAnimation.EasingFunction>
+                </DoubleAnimation>
+                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleY" To="1" Duration="0:0:0.18">
+                    <DoubleAnimation.EasingFunction><BackEase EasingMode="EaseOut" Amplitude="0.4"/></DoubleAnimation.EasingFunction>
+                </DoubleAnimation>
+            </Storyboard>
+
             <!-- Boutons façon macOS -->
             <Style x:Key="MacButton" TargetType="Button">
+                <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+                <Setter Property="RenderTransform">
+                    <Setter.Value>
+                        <ScaleTransform ScaleX="1" ScaleY="1"/>
+                    </Setter.Value>
+                </Setter>
                 <Setter Property="Background" Value="#B3FFFFFF"/>
                 <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
                 <Setter Property="BorderBrush" Value="{StaticResource GlassBorderBrush}"/>
@@ -91,6 +111,12 @@
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
+                <Style.Triggers>
+                    <Trigger Property="IsPressed" Value="True">
+                        <Trigger.EnterActions><BeginStoryboard Storyboard="{StaticResource PressIn}"/></Trigger.EnterActions>
+                        <Trigger.ExitActions><BeginStoryboard Storyboard="{StaticResource PressOut}"/></Trigger.ExitActions>
+                    </Trigger>
+                </Style.Triggers>
             </Style>
 
             <Style x:Key="MacPrimaryButton" TargetType="Button" BasedOn="{StaticResource MacButton}">
@@ -130,6 +156,12 @@
             </Style>
 
             <Style x:Key="MacToggleButton" TargetType="ToggleButton">
+                <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+                <Setter Property="RenderTransform">
+                    <Setter.Value>
+                        <ScaleTransform ScaleX="1" ScaleY="1"/>
+                    </Setter.Value>
+                </Setter>
                 <Setter Property="Background" Value="#B3FFFFFF"/>
                 <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
                 <Setter Property="BorderBrush" Value="{StaticResource GlassBorderBrush}"/>
@@ -157,6 +189,12 @@
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
+                <Style.Triggers>
+                    <Trigger Property="IsPressed" Value="True">
+                        <Trigger.EnterActions><BeginStoryboard Storyboard="{StaticResource PressIn}"/></Trigger.EnterActions>
+                        <Trigger.ExitActions><BeginStoryboard Storyboard="{StaticResource PressOut}"/></Trigger.ExitActions>
+                    </Trigger>
+                </Style.Triggers>
             </Style>
 
             <!-- Par défaut, tous les boutons prennent le style macOS -->

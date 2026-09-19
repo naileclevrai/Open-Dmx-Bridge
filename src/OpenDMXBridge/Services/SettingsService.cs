@@ -65,6 +65,7 @@ public sealed class SettingsService : ISettingsService
             {
                 var json = JsonSerializer.Serialize(_current, JsonOptions);
                 File.WriteAllText(_settingsPath, json);
+                _logger.Info("Paramètres enregistrés.", nameof(SettingsService));
             }
             catch (Exception ex)
             {

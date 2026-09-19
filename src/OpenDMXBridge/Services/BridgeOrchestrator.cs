@@ -90,29 +90,53 @@ public sealed class BridgeOrchestrator : IBridgeOrchestrator
         _activeOutput = _outputFactory.Create(outputType);
         _dmxEngine.SetOutput(_activeOutput);
 
-        if (_mode == BridgeOperationMode.Bridge && _activeOutput.SupportsAutoReconnect)
-        {
-            var devices = _activeOutput.EnumerateDevices();
-            if (devices.Count == 0)
-            {
-                _logger.Warning("Aucune interface DMX détectée — écoute Art-Net sans sortie.", nameof(BridgeOrchestrator));
-            }
-            else if (!_activeOutput.IsConnected)
-            {
-                var device = ResolveDevice(devices, settings.OutputDeviceId) ?? devices[0];
-                await _activeOutput.ConnectAsync(device, cancellationToken).ConfigureAwait(false);
-            }
-        }
-        else if (_mode == BridgeOperationMode.Monitor)
-        {
-            await _activeOutput.ConnectAsync(_activeOutput.EnumerateDevices()[0], cancellationToken).ConfigureAwait(false);
-        }
-
+        // Démarrer Art-Net et le moteur DMX immédiatement — ne jamais bloquer sur la connexion USB/COM.
         await _dmxEngine.StartAsync(cancellationToken).ConfigureAwait(false);
         await _network.StartAsync(settings.SelectedNetworkAdapterId, cancellationToken).ConfigureAwait(false);
 
         _isRunning = true;
         _logger.Info($"Bridge démarré [{_mode}] — univers {universe}.", nameof(BridgeOrchestrator));
+
+        if (_mode == BridgeOperationMode.Bridge && _activeOutput.SupportsAutoReconnect)
+            _ = ConnectOutputWhenReadyAsync(settings.OutputDeviceId, cancellationToken);
+        else if (_mode == BridgeOperationMode.Monitor)
+            _ = ConnectOutputWhenReadyAsync(null, cancellationToken, monitorMode: true);
+    }
+
+    private async Task ConnectOutputWhenReadyAsync(string? deviceId, CancellationToken cancellationToken, bool monitorMode = false)
+    {
+        try
+        {
+            if (_activeOutput is null)
+                return;
+
+            if (monitorMode)
+            {
+                var monitorDevices = _activeOutput.EnumerateDevices();
+                if (monitorDevices.Count > 0)
+                    await _activeOutput.ConnectAsync(monitorDevices[0], cancellationToken).ConfigureAwait(false);
+                return;
+            }
+
+            var devices = _activeOutput.EnumerateDevices();
+            if (devices.Count == 0)
+            {
+                _logger.Warning("Aucune interface DMX détectée — écoute Art-Net sans sortie.", nameof(BridgeOrchestrator));
+                return;
+            }
+
+            if (_activeOutput.IsConnected)
+                return;
+
+            var device = ResolveDevice(devices, deviceId) ?? devices[0];
+            var connected = await _activeOutput.ConnectAsync(device, cancellationToken).ConfigureAwait(false);
+            if (!connected)
+                _logger.Warning($"Sortie DMX non connectée ({device.Description}). Art-Net actif.", nameof(BridgeOrchestrator));
+        }
+        catch (Exception ex)
+        {
+            _logger.Warning($"Connexion sortie DMX différée échouée : {ex.Message}", nameof(BridgeOrchestrator));
+        }
     }
 
     public async Task StopAsync()

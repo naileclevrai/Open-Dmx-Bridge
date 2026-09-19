@@ -41,12 +41,6 @@ public partial class App : Application
         var settings = Services.GetRequiredService<ISettingsService>();
         settings.Load();
 
-        var ftdiStatus = Services.GetRequiredService<IFtdiDriverStatus>();
-        ftdiStatus.Probe();
-
-        if (!ftdiStatus.IsAvailable)
-            logger.Warning(ftdiStatus.UnavailableMessage ?? "Sortie OpenDMX indisponible.", nameof(App));
-
         var mainWindow = new MainWindow
         {
             DataContext = Services.GetRequiredService<MainViewModel>()

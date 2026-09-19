@@ -51,8 +51,8 @@
                     </StackPanel>
                 </Border>
             </StackPanel>
-            <Button Grid.Column="1" Style="{StaticResource AccentButtonStyle}"
-                    MinWidth="130" Height="34" FontWeight="SemiBold"
+            <Button Grid.Column="1" Style="{StaticResource MacPrimaryButton}"
+                    MinWidth="120" Height="30"
                     Command="{Binding ToggleBridgeCommand}"
                     Content="{Binding IsBridgeRunning, Converter={StaticResource BridgeToggleTextConverter}}"/>
         </Grid>

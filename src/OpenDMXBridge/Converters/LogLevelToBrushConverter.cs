@@ -19,9 +19,9 @@ public sealed class LogLevelToBrushConverter : IValueConverter
 
         var color = key switch
         {
-            "Error" => "#E04B4B",
-            "Warning" or "WARN" => "#9D5D00",
-            "Info" => "#1B1B1B",
+            "Error" => "#FF3B30",
+            "Warning" or "WARN" => "#B25E00",
+            "Info" => "#1D1D1F",
             "Debug" => "#7A7A7A",
             "Trace" => "#9A9A9A",
             _ => "#1B1B1B"

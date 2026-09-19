@@ -234,21 +234,31 @@
 
             <!-- Slider façon macOS : piste fine, bouton blanc rond ombré -->
             <Style x:Key="MacSliderThumb" TargetType="Thumb">
-                <Setter Property="Width" Value="20"/>
-                <Setter Property="Height" Value="20"/>
+                <Setter Property="Width" Value="22"/>
+                <Setter Property="Height" Value="22"/>
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="Thumb">
                             <Grid>
-                                <Ellipse Fill="White" Stroke="#C9C9CE" StrokeThickness="0.75">
+                                <Ellipse x:Name="Knob" Stroke="#B3FFFFFF" StrokeThickness="1">
+                                    <Ellipse.Fill>
+                                        <RadialGradientBrush GradientOrigin="0.5,0.25">
+                                            <GradientStop Color="#FFFFFFFF" Offset="0"/>
+                                            <GradientStop Color="#F2F4F7FF" Offset="1"/>
+                                        </RadialGradientBrush>
+                                    </Ellipse.Fill>
                                     <Ellipse.Effect>
-                                        <DropShadowEffect BlurRadius="4" ShadowDepth="1" Direction="270" Opacity="0.25" Color="Black"/>
+                                        <DropShadowEffect BlurRadius="8" ShadowDepth="2" Direction="270" Opacity="0.28" Color="#1B2B4B"/>
                                     </Ellipse.Effect>
                                 </Ellipse>
                             </Grid>
                             <ControlTemplate.Triggers>
-                                <Trigger Property="IsDragging" Value="True">
-                                    <Setter Property="Cursor" Value="Arrow"/>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Knob" Property="Effect">
+                                        <Setter.Value>
+                                            <DropShadowEffect BlurRadius="12" ShadowDepth="0" Opacity="0.55" Color="#0A84FF"/>
+                                        </Setter.Value>
+                                    </Setter>
                                 </Trigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
@@ -270,12 +280,12 @@
 
             <Style TargetType="Slider">
                 <Setter Property="Foreground" Value="{StaticResource AccentBrush}"/>
-                <Setter Property="Background" Value="{StaticResource SeparatorBrush}"/>
+                <Setter Property="Background" Value="{StaticResource GlassTrackBrush}"/>
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="Slider">
                             <Grid>
-                                <Border x:Name="TrackBackground" Height="4" CornerRadius="2" Background="{TemplateBinding Background}"
+                                <Border x:Name="TrackBackground" Height="5" CornerRadius="2.5" Background="{TemplateBinding Background}"
                                         VerticalAlignment="Center" Margin="8,0"/>
                                 <Track x:Name="PART_Track">
                                     <Track.DecreaseRepeatButton>
@@ -292,7 +302,7 @@
                             <ControlTemplate.Triggers>
                                 <Trigger Property="Orientation" Value="Vertical">
                                     <Setter TargetName="TrackBackground" Property="Height" Value="Auto"/>
-                                    <Setter TargetName="TrackBackground" Property="Width" Value="4"/>
+                                    <Setter TargetName="TrackBackground" Property="Width" Value="5"/>
                                     <Setter TargetName="TrackBackground" Property="VerticalAlignment" Value="Stretch"/>
                                     <Setter TargetName="TrackBackground" Property="HorizontalAlignment" Value="Center"/>
                                     <Setter TargetName="TrackBackground" Property="Margin" Value="0,8"/>
